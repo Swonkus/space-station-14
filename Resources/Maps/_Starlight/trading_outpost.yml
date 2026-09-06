@@ -19281,7 +19281,6 @@ entities:
       accessListsOriginal:
       - - Salvage
       - - SalvageLead
-    - type: DeployableTurretController
     - type: DeviceList
       devices:
       - 2833
