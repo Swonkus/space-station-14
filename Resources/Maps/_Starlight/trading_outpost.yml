@@ -19282,16 +19282,6 @@ entities:
       - - Salvage
       - - SalvageLead
     - type: DeployableTurretController
-      accessGroups:
-      - Cargo
-      - Command
-      - Engineering
-      - General
-      - Medical
-      - Research
-      - Security
-      - Service
-      - Silicon
     - type: DeviceList
       devices:
       - 2833
