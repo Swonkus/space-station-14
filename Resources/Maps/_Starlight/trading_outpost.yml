@@ -19255,15 +19255,9 @@ entities:
     - type: Transform
       parent: 1
       pos: 30.5,1.5
-    - type: AccessReader
-      accessListsOriginal:
-      - - Salvage
-      - - SalvageLead
     - type: DeviceNetwork
       deviceLists:
       - 2834
-      configurators:
-      - invalid
     - type: BatteryAmmoProvider
       proto: BulletEnergyTurretLaser
     - type: BatteryWeaponFireModes
