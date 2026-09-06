@@ -1,111 +1,6 @@
 Entries:
 - author: Caws
   changes:
-  - message: (Lagan) Radio Hosts.
-    type: Add
-  id: 407915
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Added box shelving around the map.
-    type: Add
-  id: 407916
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Added a crew monitor to Security's front desk.
-    type: Add
-  id: 407917
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Added another security records computer to Security.
-    type: Add
-  id: 407918
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Added an Evidence Room by Warden & moved the contraband storage box there.
-    type: Add
-  id: 407919
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Improved Security's front desk with new computers, evidence shelves, and widened it to make it easier for people to use it in general.
-    type: Tweak
-  id: 407920
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Upgraded Cargo Tech lockers to be large variants.
-    type: Tweak
-  id: 407921
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Upgraded Mail Tech lockers to be the large variants.
-    type: Tweak
-  id: 407922
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Fixed a missing disposals pipe west of HOP.
-    type: Fix
-  id: 407923
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Lagan) Fixed a messing disposals pipe west of Arrivals.
-    type: Fix
-  id: 407924
-  time: '2026-08-28T20:30:57.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5852
-- author: Caws
-  changes:
-  - message: (Cluster) Radio Host.
-    type: Add
-  id: 407925
-  time: '2026-08-28T20:52:27.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5853
-- author: Caws
-  changes:
-  - message: (Cluster) Added Mail Tech lockers.
-    type: Add
-  id: 407926
-  time: '2026-08-28T20:52:27.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5853
-- author: Caws
-  changes:
-  - message: (Cluster) Added Cargo Tech lockers.
-    type: Add
-  id: 407927
-  time: '2026-08-28T20:52:27.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5853
-- author: Caws
-  changes:
-  - message: (Cluster) Added box shelving around the map.
-    type: Add
-  id: 407928
-  time: '2026-08-28T20:52:27.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5853
-- author: Caws
-  changes:
-  - message: (Cluster) Fixed an unlinked conveyor on the Cargo dock.
-    type: Fix
-  id: 407929
-  time: '2026-08-28T20:52:27.000000+00:00'
-  url: https://github.com/ss14Starlight/space-station-14/pull/5853
-- author: Caws
-  changes:
   - message: (Cluster) Disposals now ejects stuff facing a wall, which should make it more reliably land on the belt.
     type: Fix
   id: 407930
@@ -2799,4 +2694,109 @@ Entries:
   id: 408314
   time: '2026-09-06T10:11:33.000000+00:00'
   url: https://github.com/ss14Starlight/space-station-14/pull/5976
+- author: Caws
+  changes:
+  - message: Disposal pipes no longer damage entities travelling through them. This means that chemistry jugs will no longer randomly break when being mailed to departments, glass shards will no longer appear randomly on the floor, and there should be less random blood/slime/oil patches along disposals tubes from people bleeding while inside the tubes.
+    type: Remove
+  id: 408315
+  time: '2026-09-06T10:42:30.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5968
+- author: Caws
+  changes:
+  - message: (Cork) Radio Host.
+    type: Add
+  id: 408316
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) Moved funding allocation computer out of QM's office and into the Bridge.
+    type: Tweak
+  id: 408317
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) Improved the sauna with the new platforms and stairs.
+    type: Tweak
+  id: 408318
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) Fixed a bunch of tiles-under-windows where there should have been plating instead.
+    type: Tweak
+  id: 408319
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) Small aesthetic tweaks to decals.
+    type: Tweak
+  id: 408320
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) Removed ice crust that was on top of ice, which would get people stuck.
+    type: Fix
+  id: 408321
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) Removed a camera that was floating off-grid.
+    type: Fix
+  id: 408322
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Caws
+  changes:
+  - message: (Cork) NCT Office.
+    type: Remove
+  id: 408323
+  time: '2026-09-06T10:42:31.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/5906
+- author: Citrea
+  changes:
+  - message: Soviet crates do *not* collide anymore, until collision issues are fixed.
+    type: Remove
+  id: 408324
+  time: '2026-09-06T14:06:23.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/6015
+- author: Citrea
+  changes:
+  - message: Secure crates can be deconstructed again.
+    type: Fix
+  id: 408325
+  time: '2026-09-06T14:06:23.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/6015
+- author: Citrea
+  changes:
+  - message: Crates are once again passable when open.
+    type: Fix
+  id: 408326
+  time: '2026-09-06T14:06:23.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/6015
+- author: Citrea
+  changes:
+  - message: Cybernetic Welding Tools have a fuel tank again.
+    type: Fix
+  id: 408327
+  time: '2026-09-06T14:34:01.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/6011
+- author: wonderfulnewworld
+  changes:
+  - message: Match sticks and torches can ignite fires now.
+    type: Tweak
+  id: 408328
+  time: '2026-09-06T14:55:46.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/6012
+- author: wonderfulnewworld
+  changes:
+  - message: Salvage medic can no longer be antag.
+    type: Fix
+  id: 408329
+  time: '2026-09-06T15:16:50.000000+00:00'
+  url: https://github.com/ss14Starlight/space-station-14/pull/6013
 Order: -1
