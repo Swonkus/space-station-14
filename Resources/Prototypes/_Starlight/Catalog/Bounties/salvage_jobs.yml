@@ -147,7 +147,7 @@
       amount: 1
       whitelist:
         tags:
-          - AdvancedMop
+          - MopAdv
 
 - type: cargoBounty
   id: BountySalvageCommieWeapons
