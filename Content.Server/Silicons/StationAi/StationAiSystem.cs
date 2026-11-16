@@ -37,8 +37,6 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using static Content.Server.Chat.Systems.ChatSystem;
-
-#region Starlight
 using Content.Server.Medical.SuitSensors;
 using Content.Shared.Follower.Components;
 using Content.Shared.Follower;
@@ -47,14 +45,10 @@ using Content.Shared.Medical.SuitSensor;
 using Content.Shared.Medical.SuitSensors;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Warps;
-using Content.Shared._Starlight.Silicons.Borgs;
-using Robust.Shared.Localization;
-using Robust.Shared.Log;
 using Robust.Shared.Map;
-using System.Collections.Generic;
+using Content.Shared._Starlight.Silicons.Borgs;
 using Content.Shared._Starlight.StationAi;
 using Content.Shared.Tag;
-#endregion Starlight
 
 namespace Content.Server.Silicons.StationAi;
 
@@ -79,7 +73,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     // Starlight Start
-    [Dependency] private IMapManager _map = default!;
+    [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private TagSystem _tags = default!;
     [Dependency] private SuitSensorSystem _suitSensors = default!;
     [Dependency] private FollowerSystem _followerSystem = default!;
@@ -101,6 +95,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
     private readonly ProtoId<ChatNotificationPrototype> _aiWireSnippedChatNotificationPrototype = "AiWireSnipped";
     private readonly ProtoId<ChatNotificationPrototype> _aiLosingPowerChatNotificationPrototype = "AiLosingPower";
     private readonly ProtoId<ChatNotificationPrototype> _aiCriticalPowerChatNotificationPrototype = "AiCriticalPower";
+    private readonly ProtoId<ChatNotificationPrototype> _aiTakingDamageChatNotificationPrototype = "AiTakingDamage";
 
     private readonly ProtoId<JobPrototype> _stationAiJob = "StationAi";
     private readonly EntProtoId _stationAiBrain = "StationAiBrainConstructed"; // SL edit
@@ -120,7 +115,6 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         SubscribeLocalEvent<StationAiCoreComponent, DestructionEventArgs>(OnDestruction);
         SubscribeLocalEvent<StationAiCoreComponent, DoAfterAttemptEvent<IntellicardDoAfterEvent>>(OnDoAfterAttempt);
         SubscribeLocalEvent<StationAiCoreComponent, RejuvenateEvent>(OnRejuvenate);
-
         SubscribeLocalEvent<ExpandICChatRecipientsEvent>(OnExpandICChatRecipients);
         SubscribeLocalEvent<StationAiTurretComponent, AmmoShotEvent>(OnAmmoShot);
         SubscribeLocalEvent<SuitSensorComponent, SuitSensorModeChangedEvent>(OnSuitSensorModeChanged); // Starlight
@@ -129,7 +123,6 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         SubscribeNetworkEvent<StationAiWarpToTargetEvent>(OnStationAiWarpToTarget); // Starlight
     }
 
-    // Starlight Start: AI warping
     #region Starlight
     public override void Update(float frameTime)
     {
@@ -184,11 +177,10 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
             return;
         }
 
-        var aiStation = _station.GetOwningStation(coreEntity.Owner);
         var targets = new List<StationAiWarpTarget>();
 
-        CollectCrewWarpTargets(actor, aiStation, targets);
-        CollectLocationWarpTargets(actor, aiStation, coreEntity.Comp.RemoteEntity, targets);
+        CollectCrewWarpTargets(actor, targets); // Starlight
+        CollectLocationWarpTargets(actor, coreEntity.Comp.RemoteEntity, targets); // Starlight
 
         if (targets.Count == 0)
             _warpSawmill.Debug($"No warp targets available for Station AI {Name(actor)} ({actor}).");
@@ -211,14 +203,20 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
             return;
         }
 
-        if (!TryWarpEyeToEntity(actor, target))
+        if (!CanAccessGrid((actor, null), Transform(target).GridUid)) // Starlight
+        {
+            _warpSawmill.Debug($"Station AI {Name(actor)} ({actor}) attempted to warp to inaccessible target {Name(target)} ({target}).");
+            return;
+        }
+
+        if (!TryWarpEyeToEntity((actor, null), target)) // Starlight
             _warpSawmill.Debug($"Station AI {Name(actor)} ({actor}) warp to {Name(target)} ({target}) rejected by TryWarpEyeToEntity.");
     }
 
     /// <summary>
     /// Populates the warp target buffer with crew members whose suit sensors are broadcasting coordinates.
     /// </summary>
-    private void CollectCrewWarpTargets(EntityUid actor, EntityUid? aiStation, List<StationAiWarpTarget> buffer)
+    private void CollectCrewWarpTargets(EntityUid actor, List<StationAiWarpTarget> buffer)
     {
         var processed = new HashSet<EntityUid>();
         var enumerator = EntityQueryEnumerator<SuitSensorComponent, TransformComponent>();
@@ -242,12 +240,10 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
             if (!HasComp<HumanoidAppearanceComponent>(ownerUid))
                 continue;
 
-            if (aiStation is { } station)
-            {
-                var ownerStation = _station.GetOwningStation(ownerUid);
-                if (ownerStation != station)
-                    continue;
-            }
+            // Starlight - start
+            if (!CanAccessGrid((actor, null), Transform(ownerUid).GridUid))
+                continue;
+            // Starlight - end
 
             // Don't show crew members outside of camera view
             if (_aiVision.IsOutsideCameraViewCached(ownerUid)) // starlight
@@ -261,7 +257,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         }
     }
 
-    private void CollectLocationWarpTargets(EntityUid actor, EntityUid? aiStation, EntityUid? remoteEntity, List<StationAiWarpTarget> buffer)
+    private void CollectLocationWarpTargets(EntityUid actor, EntityUid? remoteEntity, List<StationAiWarpTarget> buffer)
     {
         var query = AllEntityQuery<WarpPointComponent, TransformComponent>();
 
@@ -281,35 +277,36 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
                 continue;
             // Starlight End
 
-            if (aiStation is { } station)
+            // Starlight - start
+            if (!CanAccessGrid((actor, null), Transform(uid).GridUid))
             {
-                var warpStation = _station.GetOwningStation(uid);
-                if (warpStation != station)
-                {
-                    _warpSawmill.Debug($"Skipping warp point {Name(uid)} ({uid}) outside AI station {station}.");
-                    continue;
-                }
+                _warpSawmill.Debug($"Skipping warp point {Name(uid)} ({uid}) outside AI grid access list.");
+                continue;
             }
+            // Starlight - end
 
             var name = warp.Location ?? Name(uid);
             buffer.Add(new StationAiWarpTarget(GetNetEntity(uid), name, StationAiWarpTargetType.Location));
         }
     }
 
-    public bool TryWarpEyeToCoordinates(EntityUid user, EntityCoordinates coordinates, bool popupOnFailure = true)
+    /// <summary>Attempts to warp the Station AI eye to coordinates on a grid the AI is allowed to access.</summary>
+    public bool TryWarpEyeToCoordinates(Entity<StationAiHeldComponent?> user, EntityCoordinates coordinates, bool popupOnFailure = true) // Starlight
     {
+        Resolve(user, ref user.Comp, false);
+
         bool Fail()
         {
             if (popupOnFailure)
-                _popups.PopupClient(Loc.GetString("ai-device-not-responding"), user, PopupType.MediumCaution);
+                _popups.PopupClient(Loc.GetString("ai-device-not-responding"), user.Owner, PopupType.MediumCaution); // Starlight
 
             return false;
         }
 
-        if (!HasComp<StationAiHeldComponent>(user))
+        if (user.Comp == null)
             return Fail();
 
-        if (!TryGetCore(user, out var coreEntity) || coreEntity.Comp == null)
+        if (!TryGetCore(user.Owner, out var coreEntity) || coreEntity.Comp == null)
             return Fail();
 
         var coreUid = coreEntity.Owner;
@@ -334,15 +331,10 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         if (!_map.TryFindGridAt(mapCoordinates, out var gridUid, out _))
             return Fail();
 
-        var aiStation = _station.GetOwningStation(coreUid);
-
-        if (aiStation != null)
-        {
-            var targetStation = _station.GetOwningStation(gridUid);
-
-            if (targetStation != aiStation)
-                return Fail();
-        }
+        // Starlight - start
+        if (!CanAccessGrid((user, null), gridUid))
+            return Fail();
+        // Starlight - end
 
         var targetCoords = _xforms.ToCoordinates((gridUid, Transform(gridUid)), mapCoordinates);
 
@@ -354,17 +346,20 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         return true;
     }
 
-    public bool TryWarpEyeToEntity(EntityUid user, EntityUid target, bool popupOnFailure = true)
+    ///<summary>Attempts to warp the Station AI eye to an entity on a grid the AI is allowed to access.</summary>
+    public bool TryWarpEyeToEntity(Entity<StationAiHeldComponent?> user, EntityUid target, bool popupOnFailure = true)
     {
+        Resolve(user, ref user.Comp, false);
+
         bool Fail()
         {
             if (popupOnFailure)
-                _popups.PopupClient(Loc.GetString("ai-device-not-responding"), user, PopupType.MediumCaution);
+                _popups.PopupClient(Loc.GetString("ai-device-not-responding"), user.Owner, PopupType.MediumCaution);
 
             return false;
         }
 
-        if (!TryGetCore(user, out var coreEntity) || coreEntity.Comp == null)
+        if (!TryGetCore(user.Owner, out var coreEntity) || coreEntity.Comp == null)
             return Fail();
 
         if (!TryComp<StationAiCoreComponent>(coreEntity.Owner, out var core))
@@ -378,9 +373,15 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
 
         var remoteXform = Transform(remoteEye);
 
+        if (HasComp<StationAiHeldComponent>(user) && !CanAccessGrid((user, null), Transform(target).GridUid))
+        {
+            StopFollowingTarget(remoteEye, target);
+            return Fail();
+        }
+
         if ((TryComp(target, out WarpPointComponent? warp) && warp.Follow) || HasComp<MobStateComponent>(target))
         {
-            var orbit = !HasComp<StationAiHeldComponent>(user);
+            var orbit = user.Comp == null;
             _followerSystem.StartFollowingEntity(remoteEye, target, orbit);
             if (!orbit)
                 _activeFollowTargets[target] = remoteEye;
@@ -401,6 +402,19 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         }
 
         return TryWarpEyeToCoordinates(user, Transform(target).Coordinates, popupOnFailure);
+    }
+
+    private void StopFollowingTarget(EntityUid remoteEye, EntityUid target)
+    {
+        if (_activeFollowTargets.TryGetValue(target, out var follower) && follower == remoteEye)
+            _activeFollowTargets.Remove(target);
+
+        if (!HasComp<FollowerComponent>(remoteEye))
+            return;
+
+        var parent = Transform(remoteEye).ParentUid;
+        if (parent == target)
+            _followerSystem.StopFollowingEntity(remoteEye, target);
     }
 
     private void OnSuitSensorModeChanged(Entity<SuitSensorComponent> ent, ref SuitSensorModeChangedEvent args)
@@ -488,6 +502,16 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
     {
         base.OnAiInsert(ent, ref args);
 
+        // Starlight - start
+        if (args.Container.ID == StationAiCoreComponent.Container)
+        {
+            if (TryComp<StationAIShuntableComponent>(args.Entity, out var shuntable))
+                shuntable.SlotReservationStation = _station.GetOwningStation(ent.Owner);
+
+            _containerSpawnJobSlots.RefreshJobSlots();
+        }
+        // Starlight - end
+
         UpdateBatteryAlert(ent);
         UpdateCoreIntegrityAlert(ent);
         UpdateDamagedAccent(ent);
@@ -496,6 +520,17 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
     protected override void OnAiRemove(Entity<StationAiCoreComponent> ent, ref EntRemovedFromContainerMessage args)
     {
         base.OnAiRemove(ent, ref args);
+
+        // Starlight - start
+        if (args.Container.ID == StationAiCoreComponent.Container)
+        {
+            if (TryComp<StationAIShuntableComponent>(args.Entity, out var shuntable)) // Starlight
+                shuntable.SlotReservationStation = _station.GetOwningStation(ent.Owner); // Starlight
+
+            _containerSpawnJobSlots.RefreshJobSlots(allowAiSlotIncrease: false);
+            AnnounceAiCoreConnectionLost(args.Entity, ent.Owner);
+        }
+        // Starlight - end
 
         _alerts.ClearAlert(args.Entity, _batteryAlert);
         _alerts.ClearAlert(args.Entity, _damageAlert);
@@ -512,6 +547,11 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
     {
         if (args.NewMobState != MobState.Alive)
         {
+            // Starlight - start
+            if (args.OldMobState == MobState.Alive)
+                AnnounceAiOffline(ent.Owner);
+            // Starlight - end
+
             SetStationAiState(ent, StationAiState.Dead);
             return;
         }
@@ -551,14 +591,18 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
 
     private void OnApcBatteryChanged(Entity<StationAiCoreComponent> ent, ref ApcPowerReceiverBatteryChangedEvent args)
     {
+        // Starlight - start
         if (!args.Enabled)
+        {
+            _delayedEvent.Cancel(ent.Owner, AiPowerLossAlertEventId);
             return;
+        }
+        // Starlight - end
 
         if (!TryGetHeld((ent.Owner, ent.Comp), out var held))
             return;
 
-        var ev = new ChatNotificationEvent(_aiLosingPowerChatNotificationPrototype, ent);
-        RaiseLocalEvent(held.Value, ref ev);
+        _delayedEvent.Schedule(ent.Owner, AiPowerLossAlertEventId, _aiPowerLossAlertDelay); // Starlight
     }
 
     private void OnChargeChanged(Entity<StationAiCoreComponent> entity, ref ChargeChangedEvent args)
@@ -569,7 +613,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
 
     private void OnDamageChanged(Entity<StationAiCoreComponent> entity, ref DamageChangedEvent args)
     {
-        UpdateCoreIntegrityAlert(entity);
+        UpdateCoreIntegrityAlert(entity, args.DamageIncreased);
         UpdateDamagedAccent(entity);
     }
 
@@ -586,7 +630,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
             accent.OverrideChargeLevel = _battery.GetChargeLevel((ent.Owner, battery));
 
         if (TryComp<DamageableComponent>(ent, out var damageable))
-            accent.OverrideTotalDamage = damageable.TotalDamage;
+            accent.OverrideTotalDamage = _damageable.GetTotalDamage((ent, damageable));
 
         if (TryComp<DestructibleComponent>(ent, out var destructible))
             accent.DamageAtMaxCorruption = _destructible.DestroyedAt(ent, destructible);
@@ -619,7 +663,7 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         }
     }
 
-    private void UpdateCoreIntegrityAlert(Entity<StationAiCoreComponent> ent)
+    private void UpdateCoreIntegrityAlert(Entity<StationAiCoreComponent> ent, bool damageIncreased = false)
     {
         if (!TryComp<DamageableComponent>(ent, out var damageable))
             return;
@@ -633,10 +677,16 @@ public sealed partial class StationAiSystem : SharedStationAiSystem
         if (!_proto.TryIndex(_damageAlert, out var proto))
             return;
 
-        var damagePercent = damageable.TotalDamage / _destructible.DestroyedAt(ent, destructible);
+        var damagePercent = _damageable.GetTotalDamage((ent, damageable)) / _destructible.DestroyedAt(ent, destructible);
         var damageLevel = Math.Round(damagePercent.Float() * proto.MaxSeverity);
 
         _alerts.ShowAlert(held.Value, _damageAlert, (short)Math.Clamp(damageLevel, 0, proto.MaxSeverity));
+
+        if (damageIncreased)
+        {
+            var ev = new ChatNotificationEvent(_aiTakingDamageChatNotificationPrototype, ent);
+            RaiseLocalEvent(held.Value, ref ev);
+        }
     }
 
     private void OnDoAfterAttempt(Entity<StationAiCoreComponent> ent, ref DoAfterAttemptEvent<IntellicardDoAfterEvent> args)

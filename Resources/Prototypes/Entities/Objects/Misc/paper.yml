@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [SolutionFood, BaseItem]
   id: BasePaper
   abstract: true
   components:
@@ -51,19 +51,15 @@
     flavors:
     - paper
   - type: BadFood
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 1
-        reagents:
-        - ReagentId: Fiber
-          Quantity: 1
-  - type: Material
-  - type: PhysicalComposition
-    materialComposition:
-      SheetPrinter: 100
+  - type: Solution
+    solution:
+      maxVol: 2.5
+      reagents:
+      - ReagentId: Fiber
+        Quantity: 1.25
   - type: Item
     size: Tiny
+  - type: PhysicalComposition
 
 - type: entity
   name: paper
@@ -92,6 +88,7 @@
         type: PaperBoundUserInterface
   - type: FaxableObject
   - type: PaperVisuals
+  - type: StationAiWhitelist
 
 - type: entity
   name: paper scrap
@@ -219,17 +216,6 @@
     - Document
     - Trash
     - Paper
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.08,-0.20,0.08,0.20"
-        density: 2.5
-        mask:
-          - ItemMask
-        restitution: 0.3  # fite me
-        friction: 0.2
   - type: StaticPrice
     price: 0
   - type: NanoTaskPrinted
@@ -372,7 +358,6 @@
   parent: Paper
   id: NukeCodePaper
   name: nuclear authentication codes
-  suffix: Random # Starlight
   components:
   - type: NukeCodePaper
     allNukesAvailable: true
@@ -482,3 +467,4 @@
       - !type:EmptyAllContainersBehaviour
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+  - type: StationAiWhitelist

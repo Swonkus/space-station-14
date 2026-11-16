@@ -32,7 +32,6 @@ using Robust.Shared.Random;
 using PullableComponent = Content.Shared.Movement.Pulling.Components.PullableComponent;
 using PullerComponent = Content.Shared.Movement.Pulling.Components.PullerComponent;
 using Content.Shared._ES.Sparks;
-using Content.Shared.Interaction.Events;
 
 namespace Content.Server.Electrocution;
 
@@ -240,6 +239,7 @@ public sealed partial class ElectrocutionSystem : SharedElectrocutionSystem
                     electrified.SiemensCoefficient
                 );
             }
+            RaiseShockDealt(uid, targetUid, lastRet); // Starlight
             return lastRet;
         }
 
@@ -268,6 +268,7 @@ public sealed partial class ElectrocutionSystem : SharedElectrocutionSystem
                     true,
                     electrified.SiemensCoefficient);
             }
+            RaiseShockDealt(uid, targetUid, lastRet); // Starlight
             return lastRet;
         }
     }

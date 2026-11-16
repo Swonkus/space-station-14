@@ -23,7 +23,7 @@
     stateDoorOpen: sec_open
     stateDoorClosed: sec_door
   - type: AccessReader
-    access: [["Security"], ["Cadet"]]
+    access: [["Security"]]
 
 # Brigmedic
 - type: entity
@@ -38,6 +38,22 @@
     stateDoorClosed: brigmedic_door
   - type: AccessReader
     access: [["Brigmedic"]]
+
+#Gunnery Sergeant
+- type: entity
+  id: LockerGunnerySergeant
+  parent: LockerBaseSecure
+  name: gunnery sergeant's locker
+  components:
+  - type: Appearance
+  - type: Sprite
+    sprite: _Starlight/Structures/Storage/closet.rsi
+  - type: EntityStorageVisuals
+    stateBaseClosed: gunnerysergeant
+    stateDoorOpen: gunnerysergeant_open
+    stateDoorClosed: gunnerysergeant_door
+  - type: AccessReader
+    access: [["Armory"]]
 
 ## NanoTrasen Representatives
 #BSO
@@ -108,7 +124,7 @@
     stateDoorOpen: nanotrasen-black_open
     stateDoorClosed: nct_door
   - type: AccessReader
-    access: [["Command"]]
+    access: [["NTPersonnel"]]
   - type: WiresPanelSecurity
     securityLevel: medSecurity
 
@@ -346,3 +362,68 @@
   components:
     - type: AccessReader
       access: [["CentralCommand"]]
+
+##ITG
+
+# Salvage Lead
+- type: entity
+  id: LockerSalvageLeadITG
+  parent: LockerBaseSecure
+  name: salvage lead's locker
+  components:
+    - type: Appearance
+    - type: Sprite
+      sprite: _Starlight/Structures/Storage/closet.rsi
+    - type: EntityStorageVisuals
+      stateBaseClosed: salvagelead
+      stateDoorOpen: salvagelead_open
+      stateDoorClosed: salvagelead_door
+    - type: AccessReader
+      access: [["SalvageLead"]]
+
+- type: entity
+  id: LockerSalvageSpecialistITG
+  parent: LockerBase
+  name: salvage specialist's equipment
+  description: Nevermind the pickaxe.
+  components:
+  - type: Appearance
+  - type: EntityStorageVisuals
+    stateBaseClosed: mining
+    stateDoorOpen: mining_open
+    stateDoorClosed: mining_door
+  - type: AccessReader
+    access: [["Salvage"]]
+
+# Salvage Specialist (regular) is in wizden files
+# Salvage Specialist (Large)
+- type: entity
+  id: LockerSalvageSpecialistLargeITG
+  parent: LockerLargeBaseSecure
+  name: large salvage specialist's locker
+  components:
+  - type: Appearance
+  - type: Sprite
+    sprite: _Starlight/Structures/Storage/closet-large.rsi
+  - type: EntityStorageVisuals
+    stateBaseClosed: salvage
+    stateDoorOpen: salvage_open
+    stateDoorClosed: salvage_door
+  - type: AccessReader
+    access: [["Salvage"]]
+
+# Salvage Medic
+- type: entity
+  id: LockerSalvageMedic
+  parent: LockerBaseSecure
+  name: salvage medic's locker
+  components:
+    - type: Appearance
+    - type: Sprite
+      sprite: _Starlight/Structures/Storage/closet.rsi
+    - type: EntityStorageVisuals
+      stateBaseClosed: salvagemedic
+      stateDoorOpen: salvagemedic_open
+      stateDoorClosed: salvagemedic_door
+    - type: AccessReader
+      access: [["Salvage"]]

@@ -1,11 +1,24 @@
 job-name-assistant = Assistant
 job-name-stirstir = Stir Stir
+job-name-cook-assistant = Cook Assistant
+job-name-delivery-assistant = Delivery Boy
+job-name-handyman-assistant = Handyman Assistant
+job-name-religious-assistant = Religious Assistant
+job-name-shopkeeper-assistant = Shopkeeper
+job-name-medical-assistant = Medical Assistant
+job-name-gardener-assistant = Gardener Assistant
+job-name-clerical-assistant = Clerical Assistant
+job-name-janitor-assistant = Janitor Assistant
+job-name-scurret = Emotional Support Scurret
+job-name-syndicate-scurret = Syndicate Scurret Reinforcement
 
 # Role timers - Apparently someone from upstream will cut us if these aren't alphabetical?
 JobBlueShield = BlueShield Officer
 JobBoxer = Boxer
 JobDutyOfficer = Duty Officer
+JobEmotionalSupportScurret = Emotional Support Scurret
 JobIAA = Internal Affairs Agent
+JobK9 = Security K9
 JobMagistrate = Magistrate
 JobMailTech = Mail Technician
 JobMiningSpecialist = Mining Specialist

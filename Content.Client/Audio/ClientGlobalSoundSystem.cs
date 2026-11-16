@@ -1,7 +1,6 @@
 ﻿using Content.Shared.Audio;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
@@ -27,6 +26,7 @@ public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeNetworkEvent<AdminSoundEvent>(PlayAdminSound);
         Subs.CVar(_cfg, CCVars.AdminSoundsEnabled, ToggleAdminSound, true);
+        InitializeAdminVolume(); // Starlight
 
         SubscribeNetworkEvent<StationEventMusicEvent>(PlayStationEventMusic);
         SubscribeNetworkEvent<StopStationEventMusic>(StopStationEventMusic);
@@ -53,6 +53,7 @@ public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
             _audio.Stop(stream);
         }
         _adminAudio.Clear();
+        _adminBaseVolumes.Clear(); // Starlight
 
         foreach (var stream in _eventAudio.Values)
         {
@@ -66,8 +67,7 @@ public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
     {
         if(!_adminAudioEnabled) return;
 
-        var stream = _audio.PlayGlobal(soundEvent.Specifier, Filter.Local(), false, soundEvent.AudioParams);
-        _adminAudio.Add(stream?.Entity);
+        PlayAdminSoundCapped(soundEvent); // Starlight-edit: volume slider and a cap on sounds at once
     }
 
     private void PlayStationEventMusic(StationEventMusicEvent soundEvent)
@@ -102,6 +102,7 @@ public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
             _audio.Stop(stream);
         }
         _adminAudio.Clear();
+        _adminBaseVolumes.Clear(); // Starlight
     }
 
     private void ToggleStationEventMusic(bool enabled)

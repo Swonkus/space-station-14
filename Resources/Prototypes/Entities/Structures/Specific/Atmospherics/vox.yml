@@ -14,19 +14,19 @@
       WaterVapor: stationWaterVapor
       Ammonia: stationAmmonia
       NitrousOxide: stationNO
-      Frezon: danger
+      Frezon: stationFrezon # Starlight
       # Funkystation Start: Funky atmos - /tg/ gases
       BZ: stationBZ
       Healium: stationHealium
       Nitrium: voxNitrium
       Pluoxium: stationPluoxium
-      Hydrogen: danger
+      Hydrogen: stationHydrogen # Starlight
       HyperNoblium: stationHyperNoblium
-      ProtoNitrate: danger
-      Zauker: danger
+      ProtoNitrate: stationProtoNitrate # Starlight
+      Zauker: stationZauker # Starlight
       Halon: voxHalon
       Helium: stationHelium
-      AntiNoblium: danger
+      AntiNoblium: stationAntiNoblium # Starlight
       # Funkystation End: Funky atmos - /tg/ gases
       # Starlight start, Starlight gases
       Ulnitranium: stationUlnitranium
@@ -96,6 +96,10 @@
 - type: entity
   parent: AirAlarm
   id: AirAlarmVox
+  # Starlight-start
+  name: vox air alarm
+  description: An air alarm set up for use in vox quarters. It expects nitrogen, and treats oxygen as a hazard.
+  # Starlight-end
   suffix: Vox Atmosphere, auto mode disabled
   components:
   - type: AirAlarm

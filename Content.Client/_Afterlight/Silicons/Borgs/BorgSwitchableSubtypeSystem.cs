@@ -1,5 +1,8 @@
 using System.Linq;
+using Content.Client.Clothing;
+using Content.Client.Inventory;
 using Content.Client.Silicons.Borgs;
+using Content.Shared.Inventory;
 using Content.Shared._Afterlight.Silicons.Borgs;
 using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs.Components;
@@ -15,7 +18,9 @@ public sealed partial class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSu
 {
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private BorgSystem _borg = default!;
+    [Dependency] private BorgSwitchableTypeSystem _borgType = default!; // Starlight
     [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private ClientClothingSystem _clothing = null!; // Starlight
 
     public override void Initialize()
     {
@@ -27,6 +32,14 @@ public sealed partial class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSu
 
     private void OnAutoHandleEvent(Entity<BorgSwitchableSubtypeComponent> ent, ref AfterAutoHandleStateEvent args)
     {
+        // Starlight Begin
+        if (ent.Comp.BorgSubtype == null)
+        {
+            if (TryComp<BorgSwitchableTypeComponent>(ent, out var borgType))
+                _borgType.UpdateEntityAppearance((ent.Owner, borgType));
+            return;
+        }
+        // Starlight End
         SelectBorgSubtype(ent);
     }
 
@@ -54,6 +67,11 @@ public sealed partial class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSu
             _sprite.RemoveLayer((entity, chassisSprite), i);
         }
 
+        // Starlight begin
+        if (TryComp<InventorySlotsComponent>(entity, out var inventorySlots))
+            inventorySlots.VisualLayerKeys.Clear();
+        // Starlight end
+
         for (int i = 0; i < borgSubtype.LayerData.Length; i++)
         {
             var layerData = borgSubtype.LayerData[i];
@@ -63,6 +81,11 @@ public sealed partial class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSu
                 layerData.Offset = borgSubtype.Offset;
             _sprite.AddLayer((owner, chassisSprite), layerData, i);
         }
+
+        // Starlight begin
+        if (TryComp<InventoryComponent>(entity, out var inventory))
+            _clothing.InitClothing(owner, inventory);
+        // Starlight end
 
         if (borgSubtype.SpriteToggleLightState is { } lightState)
             _sprite.LayerSetRsiState((entity, chassisSprite), BorgVisualLayers.LightStatus, lightState);

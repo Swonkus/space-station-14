@@ -42,6 +42,8 @@ uplink-nightvision-eyes = Night Vision Cyber Eyes
 uplink-nightvision-eyes-desc = Allows you to see in the dark but makes you more vulnerable to flashes. (Warning: You will need a surgical assistant for the procedure.)
 uplink-thermalvision-eyes = Thermal Vision Cyber Eyes
 uplink-thermalvision-eyes-desc = Allows you to see in the dark and detect creatures through walls but makes you more vulnerable to flashes. (Warning: You will need a surgical assistant for the procedure.)
+uplink-olfactory-implant-name = Olfactory Implant
+uplink-olfactory-implant-desc = Grants a partial ability to perceive and track scents. (Warning: You will need a surgical assistant for the procedure.)
 uplink-mantis-blade-arms-name = Mantis Blade Arms Bundle
 uplink-mantis-blade-arms-desc = Originally used as a simple construction tool, now turned into hidden blades that can extend from your arm while still keeping its destructive prying skill. Truly a sight to behold. (Warning: You will need a surgical assistant for the procedure.)
 uplink-advanced-claws-name = Advanced Claws Implant
@@ -50,6 +52,8 @@ uplink-forensics-implant-name = Forensics Implant
 uplink-forensics-implant-desc = A cybernetic implant for hands. Removes an agent's fingerprints so as to not leave evidence of a crime. Does not work through gloves. (Warning: You will need a surgical assistant for the procedure.)
 uplink-syndie-implant-name = Syndicate Agent Implant
 uplink-syndie-implant-desc = A cybernetic eye implant. Enables an agent to see information about the station crew, humanoids and syndicate without any glasses. (Warning: You will need a surgical assistant for the procedure.)
+uplink-nuke-op-robotkit-name = CyberSun Robotic Treatment Kit
+uplink-nuke-op-robotkit-desc = The best robotic medical kit money can buy. Features an advanced industrial welder, some HV cables, oil packs, and a microreactor cell.
 
 uplink-uzi-bundle-name = Type U3 Uzi Bundle
 uplink-uzi-bundle-desc = Contains the Type U3 Uzi, with two additional magazines.
@@ -79,10 +83,6 @@ uplink-reinforcement-radio-saboteur-cyborg-desc = A saboteur cyborg, complete wi
 uplink-reinforcement-radio-stealth-cyborg-name = Syndicate Stealth Cyborg Teleporter
 uplink-reinforcement-radio-stealth-cyborg-desc = A stealth cyborg. Whilst it is incapable of fighting, it has the ability to disguise, go invisible and move through vents. Comes with standard hacking tools.
 
-
-uplink-syndimov-law-name = Syndimov Law Circuit
-uplink-syndimov-law-desc = A modified version of crewismov that defines syndicate agents as crew.
-
 uplink-ecronizer-name = Ecronizer
 uplink-ecronizer-desc = A small device that can be used to bypass most scanning devices, making you and your items invisible to them.
 
@@ -98,11 +98,8 @@ uplink-hydra-desc = A modified Hydra capable of taking both cleanades and standa
 uplink-pizza-bomb-name = Nefarious Pizza bomb
 uplink-pizza-bomb-desc = Originally developed by covertly by DONK Co to disuade the heretics who prefer their pizza not in pocket form. This pizza box is wired, and explodes within moments of being opened.
 
-uplink-shuttle-board-name = Syndicate Shuttle Console Board
-uplink-shuttle-board-desc = A computer printed circuit board for a syndicate shuttle console.
-
 uplink-shuttle-bundle-name = Syndicate Shuttle Crate
-uplink-shuttle-bundle-desc = Everything but the shuttle board. It's a shuttle in a crate* (Some assembly required)
+uplink-shuttle-bundle-desc = Everything you need to build a shuttle (including the board!). It's a shuttle in a crate* (Some assembly required)
 
 uplink-friendship-bundle-name = Friendship Bundle
 uplink-friendship-bundle-desc = Friendship packaged in a convenient crate*. (Some assembly required)
@@ -160,3 +157,53 @@ uplink-syndicate-borgi-speed-bundle-desc = A syndicate borgi, with dagger module
 
 uplink-chameleon-bundle-name = Chameleon Kit Crate
 uplink-chameleon-bundle-desc = A crate containing a backpack full of items that contain chameleon technology allowing you to disguise as pretty much anything on the station, and more!
+
+uplink-reinforcement-radio-mothroach-name = Mothroach Reinforcement Teleporter
+uplink-reinforcement-radio-mothroach-desc =  Call in a trained mobroach to assist you. Comes with a single syndicate cigarette, a fedora, and a pair of cheap shades. Specializes in cleaning evidence and chittering.
+
+uplink-estoc-name = Estoc DMR
+uplink-estoc-desc = A designated marksman rifle, fitted with a mid-range optic for longer-range combat.
+
+uplink-plushie-linari-name = linari miun plushie
+uplink-plushie-linari-desc = An expertly crafted plush lizard in tactical officer gear, absent from the standard NanoTrasen catalogues. The stitching on the back says "Property of the Syndicate." Holding it makes you feel like you're breaking at least three corporate regulations.
+
+uplink-bombroach-microbomb-name = Bombroach Teleporter
+uplink-bombroach-microbomb-desc = Call in a handy bombroach equipped with a picobomb implant. Explodes on death or when triggered by the bombroach.
+
+# These are from funky, but funky puts them in Wizden files, so in our files they go then
+uplink-hidden-radio-botany-name = Hidden Uplink
+uplink-hidden-radio-botany-desc = An uplink disguised as a plant analyzer. Keep it for yourself or give it to a trusted ally to aid your mission. Telecrystals not included.
+
+uplink-food-pepper-shaker-lead-name = Lead Pepper Shaker
+uplink-food-pepper-shaker-lead-desc = Add a little spice to the crew's life for what they have left of it. Contained 15 units of lead.
+
+uplink-pitcher-napalm-name = Pitcher Full of Napalm
+uplink-pitcher-napalm-desc = Nothing quite like waking up to the smell of napalm in the morning. A pitcher full of 60 units of napalm.
+
+uplink-emergency-medipen-mute-name = Silencing Auto Injector
+uplink-emergency-medipen-mute-desc = An auto injector disguised as an emergency medipen filled with 15 units of mute toxin and 5 units of pax.
+
+uplink-clothing-shoes-white-no-sound-name = Mute Mime Shoes
+uplink-clothing-shoes-white-no-sound-desc = A silent threat. No one will hear you coming in this special pair of shoes.
+
+uplink-hidden-uplink-radio-science-name = Hidden Uplink
+uplink-hidden-uplink-radio-science-desc = An uplink disguised as an anomaly scanner. Keep it for yourself or give it to a trusted ally to aid your mission. Telecrystals not included.
+
+uplink-clothing-syndi-head-cone-name = Hidden Compartment Warning Cone
+uplink-clothing-syndi-head-cone-desc = An unassuming cone that's hiding a secret. Use it to secretly stash goods or to plant surprises for later.
+
+uplink-network-configurator-with-trigger-name = Network Configurator With Signaler
+uplink-network-configurator-with-trigger-desc = It may look and work like a regular network configurator but it hides a hidden long range signaler for all your triggering needs.
+
+uplink-appraisal-tool-radio-jammer-name = Disguised Radio Jammer
+uplink-appraisal-tool-radio-jammer-desc = A radio jammer hidden inside an appraisal tool. You can both jam their comms and price check the corpse!
+
+uplink-lead-chemistry-vial-name = Lead Vial
+uplink-lead-chemistry-vial-desc = A small vial containing 15 units of lead.
+# Funky end
+
+uplink-boxcutter-syndi-name = Chemical Boxcutter
+uplink-boxcutter-syndi-desc = A boxcutter with special grooves that can hold up to 10 units of chemicals.
+
+uplink-photo-camera-name = Photo Camera
+uplink-photo-camera-desc = Capture a precious moment, ruining it right after with the integrated flash.

@@ -1,0 +1,14 @@
+- type: !PartialOnly entity
+  id: PortableRecharger
+  components:
+  - type: Clothing
+    equippedPrefix: charging
+    quickEquip: false
+    slots:
+    - back
+    - suitstorage
+  - type: !PartialOnly ItemSlots
+    slots:
+      charger_slot:
+        ejectOnInteract: false
+        disableEject: false

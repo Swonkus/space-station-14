@@ -60,6 +60,16 @@
 
 - type: entity
   parent: PosterBase
+  id: PosterLegitNeverTooDead
+  name: "Never Too Dead!"
+  description: "A poster encouraging the medical team to never give up, despite all odds. 18,000 cold is no match for 20 assistants with burn automenders!"
+  components:
+  - type: Sprite
+    sprite: _Starlight/Structures/Wallmounts/posters/never-too-dead.rsi
+    state: never-too-dead
+
+- type: entity
+  parent: PosterBase
   id: PosterLegitDoNotCauseCancer
   name: "Coords Do Not Cause Cancer"
   description: "A poster proving to the crew that coords in fact, don't cause cancer."
@@ -240,7 +250,7 @@
 
 - type: entity
   parent: PosterBase
-  id: PosterlegitLawPoster
+  id: PosterLegitLawPoster
   name: "Legal Advice Advert"
   description: "A poster advertising the eponimous Butcher A. Hemmel law firm, great for beating murder charges!"
   components:
@@ -337,6 +347,26 @@
   - type: Sprite
     sprite: _Starlight/Structures/Wallmounts/posters/wanted.rsi
     state: wanted_traitor
+
+- type: entity
+  parent: PosterBase
+  id: PosterContrabandWantedDavid
+  name: "Wanted, David"
+  description: "A wanted poster for a certain mad scientist. You don't want to see what's behind the helmet. It's probably out of date."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Structures/Wallmounts/posters/wanted.rsi
+    state: wanted_david
+
+- type: entity
+  parent: PosterBase
+  id: PosterContrabandWantedLex
+  name: "Wanted, Lex Newbell"
+  description: "A wanted poster for a roboticist named Lex. His mask fits his clothes pretty well, you'd think it's standard issue. Seems to be out of date."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Structures/Wallmounts/posters/wanted.rsi
+    state: wanted_lex_newbell
 
 - type: entity
   parent: PosterBase
@@ -508,7 +538,7 @@
     state: plasma_monke
 
 - type: entity
-  parent: PosterBase
+  parent: [PosterBase, BaseSovietContraband] # Blimpuf
   id: PosterContrabandARFRadio
   name: "ARF"
   description: "An old communist radio station."
@@ -626,6 +656,37 @@
   - type: Sprite
     sprite: _Starlight/Structures/Wallmounts/posters/chip_in.rsi
     state: poster
+
+- type: entity
+  parent: PosterBase
+  id: PosterEndymion1
+  name: "Remember the Endymion"
+  description: "A simple message that carries the weight of 2000 souls."
+  components:
+    - type: Sprite
+      sprite: _Starlight/Structures/Wallmounts/posters/endymion1.rsi
+      state: poster
+
+
+- type: entity
+  parent: PosterBase
+  id: PosterEndymion2
+  name: "Selene's Torch"
+  description: "Martians treating Martians since 2127."
+  components:
+    - type: Sprite
+      sprite: _Starlight/Structures/Wallmounts/posters/endymion2.rsi
+      state: poster
+
+- type: entity
+  parent: PosterBase
+  id: PosterEndymion3
+  name: "Bluespace is safe!"
+  description: "Just remember—1 milligram is 1,000,000 nanograms. You don't want to repeat that mistake!"
+  components:
+    - type: Sprite
+      sprite: _Starlight/Structures/Wallmounts/posters/endymion3.rsi
+      state: poster
 
 - type: entity
   parent: PosterBase

@@ -49,7 +49,6 @@
     coldDamageThreshold: 285
   # Good eatin', you monster.
   - type: Butcherable
-    butcheringType: Spike
     spawned:
     - id: FoodMeat
       amount: 4
@@ -201,14 +200,6 @@
   parent: MobBaseScurret
   abstract: true
   components:
-  # Starlight-start: Languages
-    - type: LanguageKnowledge
-      speaks:
-      - ScurretSign
-      understands:
-      - ScurretSign
-      - GalacticCommon
-  # Starlight-end
     - type: Loadout
       prototypes: [ EmotionalSupportScurretGear ]
     - type: NpcFactionMember

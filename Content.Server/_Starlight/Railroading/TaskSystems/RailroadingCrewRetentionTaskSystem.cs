@@ -1,6 +1,6 @@
-using Content.Server._Starlight.Objectives.Events;
 using Content.Server._Starlight.Station;
 using Content.Server.GameTicking;
+using Content.Shared._Starlight.Objectives.Events;
 using Content.Shared._Starlight.Railroading.Components;
 using Content.Shared._Starlight.Railroading.Components.Tasks;
 using Content.Shared._Starlight.Railroading.Events;
@@ -63,6 +63,9 @@ public sealed partial class RailroadingCrewRetentionTaskSystem : EntitySystem
     private bool TryGetStationStats(Entity<RailroadableComponent> subject, out StationCrewStatisticsComponent stats)
     {
         stats = default!;
+
+        if (TerminatingOrDeleted(subject))
+            return false;
 
         if (TryComp<StationTrackerComponent>(subject, out var tracker) && tracker.LastStation is { } lastStation)
             return TryComp(lastStation, out stats!);

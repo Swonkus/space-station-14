@@ -20,7 +20,6 @@ using Robust.Shared.Input.Binding;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Utility;
 
 namespace Content.Client.Construction
 {
@@ -31,13 +30,10 @@ namespace Content.Client.Construction
     public sealed partial class ConstructionSystem : SharedConstructionSystem
     {
         [Dependency] private IPlayerManager _playerManager = default!;
-        [Dependency] private ExamineSystemShared _examineSystem = default!;
+        // Starlight-edit: ExamineSystem is unued
         [Dependency] private SharedTransformSystem _transformSystem = default!;
         [Dependency] private SpriteSystem _sprite = default!;
         [Dependency] private PopupSystem _popupSystem = default!;
-        // Starlight-edit start
-        [Dependency] private IConfigurationManager _configurationManager = default!;
-        // Starlight-edit end
 
         private readonly Dictionary<int, EntityUid> _ghosts = new();
         private readonly Dictionary<string, ConstructionGuide> _guideCache = new();
@@ -172,6 +168,8 @@ namespace Content.Client.Construction
             if (component.Prototype?.Name is null)
                 return;
 
+            _comment.Examine((uid, component), args); // Starlight-edit
+
             using (args.PushGroup(nameof(ConstructionGhostComponent)))
             {
                 args.PushMarkup(Loc.GetString(
@@ -279,19 +277,33 @@ namespace Content.Client.Construction
                 return false;
             }
 
+            return TrySpawnGhost(prototype, loc, dir, user, out ghost); // Starlight
+        }
+
+        private bool TrySpawnGhostForUser(
+            ConstructionPrototype prototype,
+            EntityCoordinates loc,
+            Direction dir,
+            EntityUid user,
+            [NotNullWhen(true)] out EntityUid? ghost,
+            bool showPopup) // Starlight: shared implementation for local and remote users.
+        {
+            ghost = null;
             if (!TryGetRecipePrototype(prototype.ID, out var targetProtoId) || !PrototypeManager.TryIndex(targetProtoId, out EntityPrototype? targetProto))
                 return false;
 
-            // Starlight-edit start
+            // Starlight-start
             if (HasReachedMaximumGhosts(loc))
                 return false;
-            // Starlight-edit end
 
-            var predicate = GetPredicate(prototype.CanBuildInImpassable, _transformSystem.ToMapCoordinates(loc));
-            if (!_examineSystem.InRangeUnOccluded(user, loc, 20f, predicate: predicate))
+            // Allow placing construction ghosts without line of sight.
+            var locMap = _transformSystem.ToMapCoordinates(loc);
+            var userMap = _transformSystem.GetMapCoordinates(user);
+            if (userMap.MapId != locMap.MapId || (userMap.Position - locMap.Position).Length() > 20f)
                 return false;
+            // Starlight-end
 
-            if (!CheckConstructionConditions(prototype, loc, dir, user, showPopup: true))
+            if (!CheckConstructionConditions(prototype, loc, dir, user, showPopup)) // Starlight
                 return false;
 
             ghost = Spawn("constructionghost", loc);
@@ -302,7 +314,6 @@ namespace Content.Client.Construction
             _ghosts.Add(comp.GhostId, ghost.Value);
 
             var sprite = Comp<SpriteComponent>(ghost.Value);
-            _sprite.SetColor((ghost.Value, sprite), new Color(48, 255, 48, 128));
 
             if (targetProto.TryGetComponent(out IconComponent? icon, EntityManager.ComponentFactory))
             {
@@ -317,39 +328,24 @@ namespace Content.Client.Construction
                 var targetSprite = EnsureComp<SpriteComponent>(dummy);
                 EntityManager.System<AppearanceSystem>().OnChangeData(dummy, targetSprite);
 
-                var destIndex = 0; // Starlight: Track how many layers we've actually added
-                for (var i = 0; i < targetSprite.AllLayers.Count(); i++)
+                _sprite.CopySprite((dummy, targetSprite), (ghost.Value, sprite));
+
+                for (var i = 0; i < sprite.AllLayers.Count(); i++)
                 {
-                    if (!targetSprite[i].Visible || !targetSprite[i].RsiState.IsValid)
-                        continue;
-
-                    var rsi = targetSprite[i].Rsi ?? targetSprite.BaseRSI;
-                    if (rsi is null || !rsi.TryGetState(targetSprite[i].RsiState, out var state) ||
-                        state.StateId.Name is null)
-                        continue;
-
-                    // Starlight START
-                    // Most of these lines only changed i => destIndex. By counting how many layers we add we prevent
-                    // empty layers since empty/missing layer indices causes bugs *elsewhere*. Yay.
-                    _sprite.AddBlankLayer((ghost.Value, sprite), destIndex);
-                    _sprite.LayerSetSprite((ghost.Value, sprite), destIndex, new SpriteSpecifier.Rsi(rsi.Path, state.StateId.Name));
-                    sprite.LayerSetShader(destIndex, "unshaded");
-                    _sprite.LayerSetVisible((ghost.Value, sprite), destIndex, true);
-
-                    // This is new: Fix offset not being copied
-                    _sprite.LayerSetOffset((ghost.Value, sprite), destIndex,
-                        targetSprite.Offset + ((SpriteComponent.Layer)targetSprite[i]).Offset);
-
-                    // Count the added layer
-                    destIndex++;
-                    // Starlight END
+                    sprite.LayerSetShader(i, "unshaded");
                 }
 
-                sprite.NoRotation = targetSprite.NoRotation; // Starlight: Fix NoRotation also being ignored.
                 Del(dummy);
             }
             else
                 return false;
+
+            UpdateGhostColor(ghost.Value, comp, sprite); // Starlight-edit: Color based on reachability
+
+            // Starlight-start: Construction ghosts render over most things.
+            // This means you can actually see the pipe ghosts you are placing for under-wall pipes!
+            _sprite.SetDrawDepth((ghost.Value, sprite), (int)Shared.DrawDepth.DrawDepth.Overdoors);
+            // Starlight-end
 
             if (prototype.CanBuildInImpassable)
                 EnsureComp<WallMountComponent>(ghost.Value).Arc = new(Math.Tau);
@@ -403,7 +399,7 @@ namespace Content.Client.Construction
         {
             // Count ghosts at the given location and allow up to the maximum allowed per tile
             var ghostCount = _ghosts.Values.Count(ghost =>
-                EntityManager.GetComponent<TransformComponent>(ghost).Coordinates.Equals(loc));
+                Comp<TransformComponent>(ghost).Coordinates.Equals(loc));
 
             return ghostCount >= _configurationManager.GetCVar(StarlightCCVars.ConstructionMaxGhostsPerTile);
         }
@@ -420,7 +416,15 @@ namespace Content.Client.Construction
             }
 
             var transform = Comp<TransformComponent>(ghostId);
+
+            // Starlight-start: Make sure player can reach before sending attempt to server
+            var mapCoords = _transformSystem.ToMapCoordinates(transform.Coordinates);
+            if (!CanReach(mapCoords, ghostComp.Prototype.CanBuildInImpassable))
+                return;
+            // Starlight-end
+
             var msg = new TryStartStructureConstructionMessage(GetNetCoordinates(transform.Coordinates), ghostComp.Prototype.ID, transform.LocalRotation, ghostId.GetHashCode());
+            ghostComp.IsBuilding = true; // Starlight-edit
             RaiseNetworkEvent(msg);
         }
 

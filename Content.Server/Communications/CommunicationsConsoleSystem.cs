@@ -1,6 +1,5 @@
 // Starlight Start
-using System;
-using System.Collections.Generic;
+
 using Content.Server.Administration.Logs;
 using Content.Server.AlertLevel;
 using Content.Server.Chat.Systems;
@@ -130,7 +129,6 @@ namespace Content.Server.Communications
             if (msg.Actor is not { Valid: true } actor) return;
             if (!CanUse(actor, uid)) return;
             if (!TryComp<SecureCommandTerminalConsoleComponent>(uid, out var terminal) || !terminal.Enabled) return;
-            if (HasComp<StationAiHeldComponent>(actor)) return;
             _uiSystem.TryOpenUi(uid, SecureCommandTerminalUiKey.Key, actor);
         }
         // Starlight End
@@ -422,7 +420,7 @@ namespace Content.Server.Communications
                 return;
             }
 
-            _roundEndSystem.RequestRoundEnd(uid);
+            _roundEndSystem.RequestRoundEnd(mob, uid);
             // Starlight start
             _globalRecallCooldownRemaining = DefaultGlobalRecallCooldownSeconds;
 
@@ -436,13 +434,15 @@ namespace Content.Server.Communications
             if (!CanCallOrRecall(comp))
                 return;
 
-            if (!CanUse(message.Actor, uid))
+            var mob = message.Actor;
+
+            if (!CanUse(mob, uid))
             {
                 _popupSystem.PopupEntity(Loc.GetString("comms-console-permission-denied"), uid, message.Actor);
                 return;
             }
 
-            _roundEndSystem.CancelRoundEndCountdown(uid);
+            _roundEndSystem.CancelRoundEndCountdown(mob, uid);
             // Starlight start
             _globalRecallCooldownRemaining = DefaultGlobalRecallCooldownSeconds;
 

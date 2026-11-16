@@ -33,6 +33,11 @@
         - LowImpassable
   - type: Anchorable
     delay: 4
+  - type: InteractionPopup
+    interactSuccessString: comp-window-knock
+    messagePerceivedByOthers: comp-window-knock
+    interactSuccessSound:
+      path: /Audio/Effects/glass_knock.ogg
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: Glass
@@ -68,15 +73,15 @@
             max: 3
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-  - type: SolutionContainerManager
-    solutions:
-      tank:
-        maxVol: 225
-        reagents:
-        - ReagentId: Water
-          Quantity: 100
-        - ReagentId: Mopwata
-          Quantity: 100
+  - type: Solution
+    id: tank
+    solution:
+      maxVol: 225
+      reagents:
+      - ReagentId: Water
+        Quantity: 100
+      - ReagentId: Mopwata
+        Quantity: 100
   - type: DrainableSolution
     solution: tank
   - type: ReagentTank

@@ -1,22 +1,4 @@
 - type: listing
-  id: SyndimovCircuitBoard
-  name: uplink-syndimov-law-name
-  description: uplink-syndimov-law-desc
-  productEntity: SyndimovCircuitBoard
-  discountCategory: usualDiscounts
-  discountDownTo:
-    Telecrystal: 10
-  cost:
-    Telecrystal: 14
-  categories:
-    - UplinkDisruption
-  conditions:
-    - !type:StoreWhitelistCondition
-      blacklist:
-        tags:
-          - NukeOpsUplink
-
-- type: listing
   id: UplinkSyndicateDisruptor
   name: uplink-disruptor-name
   description: uplink-disruptor-desc
@@ -112,12 +94,25 @@
     - UplinkDisruption
 
 - type: listing
-  id: SyndicateShuttleBoard
-  name: uplink-shuttle-board-name
-  description: uplink-shuttle-board-desc
-  productEntity: SyndicateShuttleConsoleCircuitboard
-  icon: { sprite: Objects/Misc/module.rsi, state: cpu_syndicate }
-  discountCategory: rareDiscounts
+  id: SyndicateShuttleBundle
+  name: uplink-shuttle-bundle-name
+  description: uplink-shuttle-bundle-desc
+  productEntity: CrateNameSyndicateShuttleBundle
+  icon: { sprite: Structures/Shuttles/thruster.rsi, state: base }
+  discountCategory: usualDiscounts
+  discountDownTo:
+    Telecrystal: 6
+  cost:
+    Telecrystal: 8
+  categories:
+    - UplinkDisruption
+
+- type: listing
+  id: UplinkWhiteholeGrenade
+  name: uplink-whitehole-grenade-name
+  description: uplink-whitehole-grenade-desc
+  productEntity: WhiteholeGrenade
+  discountCategory: usualDiscounts
   discountDownTo:
     Telecrystal: 1
   cost:
@@ -126,15 +121,33 @@
     - UplinkDisruption
 
 - type: listing
-  id: SyndicateShuttleBundle
-  name: uplink-shuttle-bundle-name
-  description: uplink-shuttle-bundle-desc
-  productEntity: CrateNameSyndicateShuttleBundle
-  icon: { sprite: Structures/Shuttles/thruster.rsi, state: base }
+  id: UplinkDuffelSurgery
+  name: uplink-duffel-surgery-name
+  description: uplink-duffel-surgery-desc
+  productEntity: ClothingBackpackDuffelSyndicateFilledMedical
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 4
+    Telecrystal: 2
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
-    - UplinkDisruption
+  - UplinkDisruption
+
+- type: listing
+  id: UplinkSuperSurplusBundle
+  name: uplink-super-surplus-bundle-name
+  description: uplink-super-surplus-bundle-desc
+  productEntity: CrateSyndicateSuperSurplusBundle
+  cost:
+    Telecrystal: 40
+  categories:
+  - UplinkDisruption
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+  - !type:BuyerWhitelistCondition
+    blacklist:
+      components:
+      - SurplusBundle

@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   id: OrganReptilianStomach
   parent: [OrganAnimalStomach, BaseOrganStomach]
   name: reptilian stomach
@@ -14,12 +14,30 @@
       - Crayon
       - Paper
       - IceCream
-  - type: SolutionContainerManager
+      - Birthday
+  - type: SolutionManager
     solutions:
-      stomach:
-        maxVol: 50
-      food:
-        maxVol: 5
-        reagents:
-        - ReagentId: UncookedAnimalProteins
-          Quantity: 5
+    - SolutionOrganFoodMeat
+    - SolutionOrganStomach50
+  - type: Metabolizer
+    updateInterval: 0.67 # Reptilians digest about 1.5x faster
+
+- type: entity
+  id: OrganReptilianTongue
+  parent: OrganHumanTongue
+  suffix: Reptilian
+  components:
+  - type: OrganTongue
+    allowedEmotes: ['Liss', 'Lurr', 'Rattle']
+    sounds:
+      Male: MaleReptilian
+      Female: FemaleReptilian
+      Unsexed: MaleReptilian
+
+- type: entity
+  id: OrganReptilianHeart
+  parent: OrganAnimalHeart
+  suffix: Reptilian
+  components:
+  - type: Metabolizer
+    metabolizerTypes: [ Animal, Reptilian ] # Digests welding fuel without poisoning

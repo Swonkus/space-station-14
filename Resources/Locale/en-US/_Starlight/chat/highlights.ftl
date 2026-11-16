@@ -9,6 +9,7 @@ highlights-nanotrasen-career-trainer = NanoTrasen Career Trainer, Career Trainer
 # Security
 highlights-duty-officer = Duty Officer, Security, "Sec"
 highlights-brigmedic = Brigmedic, BrigMed, "BM", Security, "Sec"
+highlights-gunnery-sergeant = Gunnery Sergeant, Sergeant, Gunny, "GS", Security, "Sec"
 
 # Cargo
 highlights-mail-technician = Mail Technician, Mail Tech, "MT", Mail, Cargo
@@ -25,7 +26,6 @@ highlights-roboticist = Roboticist, Science, Robo, "Sci", Robotics
 
 # Civilian
 highlights-boxer = Boxer
-highlights-zookeeper = Zookeeper, Zoo
 highlights-performer = Performer
 highlights-assistant = Assistant
 

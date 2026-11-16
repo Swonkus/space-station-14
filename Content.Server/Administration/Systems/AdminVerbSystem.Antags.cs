@@ -4,10 +4,9 @@ using Content.Server.Antag;
 using Content.Server.Clothing.Systems;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules.Components;
-using Content.Server.Speech.Components; // Starlight
-using Content.Server._Starlight.GameTicking.Rules.Components; // Starlight
+using Content.Server.Speech.Components;
 using Content.Server.Zombies;
-using Content.Shared._Starlight.Shadekin;
+using Content.Shared._Starlight.Shadekin.Components;
 using Content.Shared.Administration;
 using Content.Shared.Database;
 using Content.Shared.Humanoid;
@@ -15,15 +14,10 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
 using Content.Shared.Verbs;
-using Robust.Shared.Audio; // Starlight
+using Robust.Shared.Audio;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
-using Content.Shared.Roles.Components;
-using Content.Shared._Starlight.Shadekin;
-using Content.Server.Speech.Components; // Starlight
-using Robust.Shared.Audio;
-using Content.Shared._Starlight.Shadekin.Components; // Starlight
 
 namespace Content.Server.Administration.Systems;
 
@@ -49,6 +43,8 @@ public sealed partial class AdminVerbSystem
     private static readonly EntProtoId DefaultDevilRule = "Devil"; // starlight
     private static readonly EntProtoId DefaultBrighteyeRule = "SubBrighteye"; //Starlight
 	private static readonly EntProtoId DefaultSELFRule = "SiliconLiberation"; //Starlight
+    private static readonly EntProtoId DefaultBloodBoundRule = "BloodBound"; // Harmony
+    private static readonly string _theDarkMap = "TheDarkMap";
 
     // All antag verbs have names so invokeverb works.
     private void AddAntagVerbs(GetVerbsEvent<Verb> args)
@@ -257,7 +253,7 @@ public sealed partial class AdminVerbSystem
         {
             Text = Loc.GetString("admin-verb-text-make-changeling"),
             Category = VerbCategory.Antag,
-            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/Changeling/changeling_abilities.rsi"), "transform"),
+            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Starlight/Interface/Actions/actions_changeling.rsi"), "transform"),
             Act = () =>
             {
                 _antag.ForceMakeAntag<SLChangelingRuleComponent>(targetPlayer, "SLChangeling");
@@ -272,7 +268,7 @@ public sealed partial class AdminVerbSystem
         {
             Text = Loc.GetString("admin-verb-text-make-vampire"),
             Category = VerbCategory.Antag,
-            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Starlight/Vampire/actions_vampire.rsi"), "select_class"), // Starlight
+            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Starlight/Interface/Actions/actions_vampire.rsi"), "select_class"), // Starlight
             Act = () =>
             {
                 _antag.ForceMakeAntag<VampireRuleComponent>(targetPlayer, DefaultVampireRule);
@@ -320,10 +316,10 @@ public sealed partial class AdminVerbSystem
             {
                 Text = Loc.GetString("admin-verb-text-make-brighteye"),
                 Category = VerbCategory.Antag,
-                Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Starlight/Interface/Actions/shadekin.rsi"), "rest"),
+                Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Starlight/Interface/Actions/actions_shadekin.rsi"), "rest"),
                 Act = () =>
                 {
-                    _gameTicker.StartGameRule("TheDarkMap"); // The Dark should always be spawned for any brighteye.
+                    _gameTicker.StartGameRule(_theDarkMap); // The Dark should always be spawned for any brighteye.
                     _antag.ForceMakeAntag<BrighteyeRuleComponent>(targetPlayer, DefaultBrighteyeRule);
                     _autolog.LogToDiscord(Loc.GetString("admin-verb-make-brighteye"), player.Name);
                 },
@@ -363,5 +359,23 @@ public sealed partial class AdminVerbSystem
         };
         args.Verbs.Add(pirateSL);
         // STARLIGHT END
+
+        // Harmony start
+        var bloodBoundName = Loc.GetString("admin-verb-text-make-blood-bound");
+        Verb bloodBound = new()
+        {
+            Text = bloodBoundName,
+            Category = VerbCategory.Antag,
+            Icon = new SpriteSpecifier.Rsi(new("/Textures/_Harmony/Interface/Misc/job_icons.rsi"), "BloodBrother"),
+            Act = () =>
+            {
+                _antag.ForceMakeAntag<BloodBoundRuleComponent>(targetPlayer, DefaultBloodBoundRule, "BloodBound");
+                _autolog.LogToDiscord(string.Join(": ", bloodBoundName, Loc.GetString("admin-verb-make-blood-bound")), player.Name); // Starlight
+            },
+            Impact = LogImpact.High,
+            Message = string.Join(": ", bloodBoundName, Loc.GetString("admin-verb-make-blood-bound")),
+        };
+        args.Verbs.Add(bloodBound);
+        // Harmony end
     }
 }

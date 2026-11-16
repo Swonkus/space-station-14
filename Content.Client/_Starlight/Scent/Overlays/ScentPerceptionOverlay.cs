@@ -11,10 +11,10 @@ namespace Content.Client._Starlight.Scent.Overlays;
 // Redraws visible ScentMarker sprites after BlindOverlay, DarkenedVisionOverlay, and
 // BlurryVisionOverlay paint over the screen. Only draws markers the client already has and
 // ScentTrackingSystem still marks Visible.
-public sealed class ScentPerceptionOverlay : Robust.Client.Graphics.Overlay
+public sealed partial class ScentPerceptionOverlay : Robust.Client.Graphics.Overlay
 {
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     private readonly SpriteSystem _sprite;
     private readonly TransformSystem _transform;
@@ -22,8 +22,7 @@ public sealed class ScentPerceptionOverlay : Robust.Client.Graphics.Overlay
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
-    // BlindOverlay, DarkenedVisionOverlay, and BlurryVisionOverlay never set ZIndex, so they
-    // draw at the default 0. Anything higher draws after them.
+    // Draw at 1 so that the scent overlay shows over BlindOverlay, DarkenedVisionOverlay, and BlurryVisionOverlay.
     public ScentPerceptionOverlay()
     {
         IoCManager.InjectDependencies(this);

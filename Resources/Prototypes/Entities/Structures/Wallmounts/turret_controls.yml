@@ -93,6 +93,9 @@
     - Security
     - Service
     - Silicon
+    # Starlight start
+    - ITG
+    # Starlight end
     accessLevels:
     - Armory
     - Atmospherics
@@ -129,7 +132,6 @@
     # Starlight start
     - BlueShield
     - Brigmedic
-    - Cadet
     - Magistrate
     - Mining
     - Ntrep
@@ -139,6 +141,11 @@
     - Surgery
     - IAA
     - Mail
+    - Debrief
+    - Shuttle
+    - Journalism
+    - Clown
+    - Mime
     # Starlight end
   - type: DeviceList
     isAllowList: true

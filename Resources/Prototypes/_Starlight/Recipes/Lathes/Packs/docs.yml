@@ -2,6 +2,7 @@
   id: StarlightDocs
   recipes:
   - PrintedDocumentReportMorgueRecipe
+  - PrintedDocumentReportResearchAnomalyLogRecipe
   - PrintedDocumentReportStationRecipe
   - PrintedDocumentReportOnEliminationOfViolationsRecipe
   - PrintedDocumentReportDepartmentRecipe
@@ -14,6 +15,7 @@
   - PrintedDocumentDisposalReportRecipe
   - PrintedDocumentArrestReportRecipe
   - PrintedDocumentSalvageLeadReportRecipe
+  - PrintedDocumentPsychologicalReportRecipe
   # Statements
   - PrintedDocumentStatementAppointmentInterimChapterRecipe
   - PrintedDocumentEmploymentStatementRecipe
@@ -38,12 +40,16 @@
   - PrintedDocumentComplaintOffenseRecipe
   # Permissions
   - PrintedDocumentPermissionEquipmentRecipe
+  - PrintedDocumentPermissionResearchEquipmentRecipe
+  - PrintedDocumentPermissionResearchSiliconConversionRecipe
+  - PrintedDocumentPermissionResearchAnomalyHostRecipe
   - PrintedDocumentSearchPermissionRecipe
-  - PrintedDocumentPermissionToCarryWeaponsRecipe
   - PrintedDocumentPermissionDisposeBodyRecipe
   - PrintedDocumentConstructionPermitRecipe
   - PrintedDocumentSurgeryConsentPermitRecipe
   - PrintedDocumentArtPermitRecipe
+  - PrintedDocumentBorgificationConsentFormRecipe
+  - PrintedDocumentMechAuthorizationFormRecipe
   # OrdersAndInstructions
   - PrintedDocumentDismissalOrderRecipe
   - PrintedDocumentAccessRevocationOrderRecipe
@@ -53,16 +59,22 @@
   - PrintedDocumentMedicalInterventionOrderRecipe
   - PrintedDocumentExecutionDNROrderRecipe
   - PrintedDocumentEOCDesignationRecipe
+  - PrintedDocumentIllegalImplantRemovalOrderRecipe
+  - PrintedDocumentMindControlRemovalOrderRecipe
+  - PrintedDocumentExplorativeSurgeryOrderRecipe
+  - PrintedDocumentProbingMindshieldOrderRecipe
+  - PrintedDocumentCompulsoryTrackingOrderRecipe
   # Orders
   - PrintedDocumentProductOrderRecipe
   # Communications
   - PrintedDocumentCentCommCommunicationRecipe
 
-#- type: latheRecipePack
-#  id: StarlightDocsEmag
-#  recipes:
-#  - PrintedDocumentErrorLoadingFormHeaderRecipe
-#  - PrintedDocumentNoticeOfLiquidationRecipe
-#  - PrintedDocumentBusinessDealRecipe
-#  - PrintedDocumentNoteBeginningMilitaryActionsRecipe
-#  - PrintedDocumentReportAccomplishmentGoalsRecipe
+# Blimpuf - Emagged Document Printero
+- type: latheRecipePack
+  id: BlimpufDocsEmag
+  recipes:
+  - PrintedDocumentSyndicateRecruitmentOfferRecipe
+  - PrintedDocumentSyndicateOperationTakeoverRecipe
+  - PrintedDocumentSyndicateOperationBorgificationRecipe
+  - PrintedDocumentOfficialSyndicateCommunicationRecipe
+  - PrintedDocumentSyndicateDidYouKnowRecipe

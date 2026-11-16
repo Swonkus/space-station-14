@@ -1,4 +1,3 @@
-using System.Numerics;
 using Content.Server.Doors.Systems;
 using Content.Server.NPC.Pathfinding;
 using Content.Server.Shuttles.Components;
@@ -6,13 +5,10 @@ using Content.Server.Shuttles.Events;
 using Content.Shared.Doors;
 using Content.Shared.Doors.Components;
 using Content.Shared.Popups;
-using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Events;
 using Content.Shared.Shuttles.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Physics;
-using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Dynamics.Joints;
 using Robust.Shared.Physics.Systems;
@@ -22,7 +18,6 @@ namespace Content.Server.Shuttles.Systems
 {
     public sealed partial class DockingSystem : SharedDockingSystem
     {
-        [Dependency] private IMapManager _mapManager = default!;
         [Dependency] private SharedMapSystem _mapSystem = default!;
         [Dependency] private DoorSystem _doorSystem = default!;
         [Dependency] private EntityLookupSystem _lookup = default!;
@@ -51,7 +46,6 @@ namespace Content.Server.Shuttles.Systems
             SubscribeLocalEvent<DockingComponent, ComponentStartup>(OnStartup);
             SubscribeLocalEvent<DockingComponent, ComponentShutdown>(OnShutdown);
             SubscribeLocalEvent<DockingComponent, AnchorStateChangedEvent>(OnAnchorChange);
-            SubscribeLocalEvent<DockingComponent, ReAnchorEvent>(OnDockingReAnchor);
 
             SubscribeLocalEvent<DockingComponent, BeforeDoorAutoCloseEvent>(OnAutoClose);
 
@@ -93,6 +87,7 @@ namespace Content.Server.Shuttles.Systems
 
         private void OnShutdown(EntityUid uid, DockingComponent component, ComponentShutdown args)
         {
+            InvalidateRadarDockingPortStates(); // Starlight
             if (component.DockedWith == null ||
                 Comp<MetaDataComponent>(uid).EntityLifeStage > EntityLifeStage.MapInitialized)
             {
@@ -157,6 +152,7 @@ namespace Content.Server.Shuttles.Systems
 
         private void OnStartup(Entity<DockingComponent> entity, ref ComponentStartup args)
         {
+            InvalidateRadarDockingPortStates(); // Starlight
             var uid = entity.Owner;
             var component = entity.Comp;
 
@@ -181,25 +177,26 @@ namespace Content.Server.Shuttles.Systems
 
         private void OnAnchorChange(Entity<DockingComponent> entity, ref AnchorStateChangedEvent args)
         {
+            InvalidateRadarDockingPortStates(); // Starlight
             if (!args.Anchored)
             {
                 Undock(entity);
             }
         }
 
-        private void OnDockingReAnchor(Entity<DockingComponent> entity, ref ReAnchorEvent args)
-        {
-            var uid = entity.Owner;
-            var component = entity.Comp;
+    [SubscribeLocalEvent]
+    private void OnDockingMove(Entity<DockingComponent> entity, ref MoveEvent args)
+    {
+        var uid = entity.Owner;
+        var component = entity.Comp;
 
-            if (!component.Docked)
-                return;
+        if (!component.Docked || args.OnlyRotation)
+            return;
 
-            var otherDock = component.DockedWith;
-            var other = Comp<DockingComponent>(otherDock!.Value);
+            var other = Comp<DockingComponent>(entity.Comp.DockedWith!.Value);
 
             Undock(entity);
-            Dock((uid, component), (otherDock.Value, other));
+            Dock(entity, (entity.Comp.DockedWith.Value, other)); // Starlight-edit
             _console.RefreshShuttleConsoles();
         }
 

@@ -6,14 +6,11 @@ using Content.Client.Gameplay;
 using Content.Client.Hands;
 using Content.Client.Interaction;
 using Content.Client.Outline;
-using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Actions.Controls;
 using Content.Client.UserInterface.Systems.Actions.Widgets;
 using Content.Client.UserInterface.Systems.Actions.Windows;
 using Content.Client.UserInterface.Systems.Gameplay;
-using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
-using Content.Shared.Charges.Systems;
 using Content.Shared.Input;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -91,7 +88,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
 
     private void OnScreenLoad()
     {
-       LoadGui();
+        LoadGui();
     }
 
     private void OnScreenUnload()
@@ -106,6 +103,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
             _actionsSystem.OnActionAdded += OnActionAdded;
             _actionsSystem.OnActionRemoved += OnActionRemoved;
             _actionsSystem.ActionsUpdated += OnActionsUpdated;
+            ResetArrangement(); // Starlight
         }
 
         UpdateFilterLabel();
@@ -260,6 +258,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
             return;
 
         _actions.Add(action);
+        QueueSort(); // Starlight
     }
 
     private void OnActionRemoved(EntityUid actionId)
@@ -270,12 +269,21 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
         if (actionId == SelectingTargetFor)
             StopTargeting();
 
+        // Starlight Begin
+        // End a drag on this action's own button now, before a hotbar rebuild can remove it from
+        // the tree. A removed control never gets its mouse-up delivered, which would otherwise
+        // orphan the drag shadow with no client-side way to clear it.
+        if (_menuDragHelper.Dragged?.Action?.Owner == actionId)
+            _menuDragHelper.EndDrag();
+        // Starlight End
+
         _actions.RemoveAll(x => x == actionId);
     }
 
     private void OnActionsUpdated()
     {
         QueueWindowUpdate();
+        QueueSort(); // Starlight
 
         if (_actionsSystem != null)
             _container?.SetActionData(_actionsSystem, _actions.ToArray());
@@ -431,6 +439,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
         if (_actionsSystem == null)
             return;
 
+        _userArranged = true; // Starlight
         int position;
 
         if (actionId == null)
@@ -509,6 +518,16 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
 
     private void OnWindowActionPressed(GUIBoundKeyEventArgs args, ActionButton action)
     {
+        // Starlight-start
+        if (args.Function == EngineKeyFunctions.UIRightClick)
+        {
+            if (action.Action is { } toAdd)
+                AddToHotbar(toAdd);
+            args.Handle();
+            return;
+        }
+        // Starlight-end
+
         if (args.Function != EngineKeyFunctions.UIClick && args.Function != EngineKeyFunctions.Use)
             return;
 
@@ -530,7 +549,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
 
     private void OnActionPressed(GUIBoundKeyEventArgs args, ActionButton button)
     {
-        if (args.Function == EngineKeyFunctions.UIRightClick)
+        if (args.Function == ContentKeyFunctions.HotbarRemove) // Starlight
         {
             SetAction(button, null);
             args.Handle();
@@ -702,6 +721,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
         if (_actionsSystem == null)
             return;
 
+        _userArranged = true; // Starlight
         _actions.Clear();
         foreach (var assign in assignments)
         {
@@ -737,6 +757,14 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
         _menuDragHelper.Update(args.DeltaSeconds);
         if (_window is {UpdateNeeded: true})
             SearchAndDisplay();
+        // Starlight start
+        // improve sorting++ (please work god please work on live i beg)
+        if (!_sortQueued || _actionsSystem == null) return;
+        _sortQueued = false;
+        if (_userArranged || !LoadDefaultActions()) return;
+        _container?.SetActionData(_actionsSystem, _actions.ToArray());
+        QueueWindowUpdate();
+        // Starlight end
     }
 
     private void OnComponentLinked(ActionsComponent component)
@@ -744,6 +772,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
         if (_actionsSystem == null)
             return;
 
+        ResetArrangement(); // Starlight
         LoadDefaultActions();
         _container?.SetActionData(_actionsSystem, _actions.ToArray());
         QueueWindowUpdate();
@@ -751,18 +780,24 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
 
     private void OnComponentUnlinked()
     {
+        ResetArrangement(); // Starlight
         _container?.ClearActionData();
         QueueWindowUpdate();
         StopTargeting();
     }
 
-    private void LoadDefaultActions()
+    private bool LoadDefaultActions() // Starlight edit
     {
         if (_actionsSystem == null)
-            return;
+            return false; // Starlight edit
 
         var actions = _actionsSystem.GetClientActions().Where(action => action.Comp.AutoPopulate).ToList();
-        actions.Sort(ActionComparer);
+        actions.Sort(_actionsSystem.ActionComparer); // Starlight edit
+
+        // Starlight begin
+        if (_actions.SequenceEqual(actions.Select(action => (EntityUid?) action.Owner)))
+            return false;
+        // Starlight end
 
         _actions.Clear();
         foreach (var (action, _) in actions)
@@ -770,6 +805,8 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
             if (!_actions.Contains(action))
                 _actions.Add(action);
         }
+
+        return true; // Starlight edit
     }
 
     /// <summary>

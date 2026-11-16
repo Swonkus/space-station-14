@@ -1,0 +1,11 @@
+- type: latheRecipePack
+  id: MedTakAmmoStatic
+  recipes:
+  - MagazineBoxVariableHeavy
+  - MagazineBoxVariableMedium
+  - MagazineBoxVariableLight
+
+- type: latheRecipePack
+  id: MedTakImplants
+  recipes:
+    - Deimplanter

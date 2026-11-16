@@ -9,7 +9,16 @@
   id: AbductorScientist
 
 - type: Tag
+  id: AbyssiumOre #BountySalvageAbyssiumOre
+
+- type: Tag
   id: AdminSpawnedPlayer # Signifies that this player entity was spawned via the "Spawn here" admin verb.
+
+- type: Tag
+  id: AnimalCube
+
+- type: Tag
+  id: AnimalCubeBox
 
 - type: Tag
   id: AnomalyCoreShadow
@@ -21,6 +30,9 @@
   id: Arachnid
 
 - type: Tag
+  id: AtmosFireHelmet # ConstructionGraph: AtmosianHelmet
+
+- type: Tag
   id: AutoMender
 
 - type: Tag
@@ -30,13 +42,22 @@
   id: AvianFood
 
 - type: Tag
+  id: Bandolier #CargoBounty: BountySalvageBandolier
+
+- type: Tag
   id: BibleThwackRemovable
+
+- type: Tag
+  id: Birthday
 
 - type: Tag
   id: BladePlasteel
 
 - type: Tag
   id: BladeSteel
+
+- type: Tag
+  id: Blood
 
 - type: Tag
   id: BloodSplatter
@@ -123,6 +144,15 @@
   id: CameraReinforced
 
 - type: Tag
+  id: CasinoChip
+
+- type: Tag
+  id: CD
+
+- type: Tag
+  id: CDCase
+
+- type: Tag
   id: CentcommVibroblade
 
 - type: Tag
@@ -162,6 +192,9 @@
   id: ClownKudzu
 
 - type: Tag
+  id: Citrus # Artifact citrus trigger
+
+- type: Tag
   id: CluwneBeastWearable
 
 - type: Tag
@@ -171,10 +204,25 @@
   id: CombatRemote # Tag: used on the RemoteSignallerCombat
 
 - type: Tag
+  id: CommieID # BountySalvageCommieID
+
+- type: Tag
   id: Compy
 
 - type: Tag
   id: Condiment
+
+- type: Tag
+  id: ConstructionComment
+
+- type: Tag
+  id: CottonBread # BountyCottonBread
+
+- type: Tag
+  id: CottonCake # BountyCottonCake
+
+- type: Tag
+  id: CoupeGlass # BountyCoupeGlass
 
 - type: Tag
   id: CrispyRiceBar
@@ -210,7 +258,16 @@
   id: DogEmotes
 
 - type: Tag
+  id: Drone
+
+- type: Tag
+  id: DroneUsable
+
+- type: Tag
   id: DrinkCarton
+
+- type: Tag
+  id: DrinkMetamorphic
 
 - type: Tag
   id: DurandArmor
@@ -258,6 +315,9 @@
   id: Felionoid
 
 - type: Tag
+  id: Experiment
+
+- type: Tag
   id: FreeMag
 
 - type: Tag
@@ -276,10 +336,16 @@
   id: FringeTraitBackground
 
 - type: Tag
+  id: FragileImplant # Implant disintegrates on extraction
+
+- type: Tag
   id: FrontierTraitBackground
 
 - type: Tag
   id: FlatpackBlacklist
+
+- type: Tag
+  id: FloppyDisk # Artifact floppy storage trigger
 
 - type: Tag
   id: GearAcidifier
@@ -295,6 +361,15 @@
 
 - type: Tag
   id: GrenadeLessLethal #Ammo for the peacekeeper
+
+- type: Tag
+  id: GunUpgradeDamageExp
+
+- type: Tag
+  id: GunUpgradeRangeExp
+
+- type: Tag
+  id: GunUpgradeReloadSpeedExp
 
 - type: Tag
   id: GygaxArmor
@@ -324,6 +399,12 @@
   id: GygaxTargetingControlModule
 
 - type: Tag
+  id: HandheldEngineeringMonitor #CE's handheld monitor
+
+- type: Tag
+  id: Heart
+
+- type: Tag
   id: HighTierCell #Blacklist for stunprod, used by the hyper and microreactor.
 
 - type: Tag
@@ -331,6 +412,9 @@
 
 - type: Tag
   id: HiltWood
+
+- type: Tag
+  id: HoloprojectorCrafting # Defines which projectors can be used to craft a False Shutters Projector
 
 - type: Tag
   id: HuntedTraitBackground
@@ -378,6 +462,23 @@
 - type: Tag
   id: JetInjector
 
+# JobIcon tags below classify JobIconPrototypes for console icon pickers (see JobIconPrototype.Tags)
+- type: Tag
+  id: JobIconAssistantManager
+
+- type: Tag
+  id: JobIconCentComm
+
+- type: Tag
+  id: JobIconCrew
+
+- type: Tag
+  id: JobIconSyndicate
+
+# Used to define clothing that the security K9 can wear.
+- type: Tag
+  id: K9Wearable
+
 - type: Tag
   id: L6Saw
 
@@ -404,6 +505,21 @@
 
 - type: Tag
   id: MagazineBattery
+
+- type: Tag
+  id: MagazineBoltPistol
+
+- type: Tag
+  id: MagazineBoltRifle
+
+- type: Tag
+  id: MagazineBoxBoltRifle
+
+- type: Tag
+  id: MetalHydrogenHelmet # ConstructionGraph: AtmosianHelmet
+
+- type: Tag
+  id: CartridgeImpactBolt
 
 - type: Tag
   id: MagazineL10DMR
@@ -509,10 +625,19 @@
   id: MicroManipulatorStockPart
 
 - type: Tag
+  id: MilkCarton # Storage whitelist: MilkCrate
+
+- type: Tag
   id: MimeMask #used in the security mime mask crafting graph
 
 - type: Tag
   id: ModularBarrel
+
+- type: Tag
+  id: ModularHudGoggles
+
+- type: Tag
+  id: ModularHudSingleEye
 
 - type: Tag
   id: ModuleBlacklistXenoborgEngiWeapon
@@ -530,6 +655,9 @@
   id: Nexus
 
 - type: Tag
+  id: NonAnimalCube
+
+- type: Tag
   id: NonLethalMech # Used to allow nonlethal mech equipment on a mech.
 
 - type: Tag
@@ -539,7 +667,13 @@
   id: NukiePlanet
 
 - type: Tag
+  id: OldTreasure #BountySalvageOldTreasure
+
+- type: Tag
   id: OmniCyberEyes
+
+- type: Tag
+  id: Outbreak
 
 - type: Tag
   id: OvenMachineBoard
@@ -566,6 +700,9 @@
   id: PlasteelFilament
 
 - type: Tag
+  id: PlayingCardDeckBox
+
+- type: Tag
   id: PlumbingDuct
 
 - type: Tag
@@ -575,16 +712,10 @@
   id: PrototypeJawsOfLife
 
 - type: Tag
-  id: ProtoElf
-
-- type: Tag
-  id: ProtoLagomorph
-
-- type: Tag
   id: PrototypeVibroblade
 
 - type: Tag
-  id: RequiredForLmgTag
+  id: RemoteSignallerAdvanced # Crafting whitelist: Advanced Deadman remote trigger
 
 - type: Tag
   id: Resomi
@@ -610,7 +741,19 @@
   id: RollerBed
 
 - type: Tag
+  id: Salad # BountySalad
+
+- type: Tag
+  id: SalvageExperimentStar
+
+- type: Tag
+  id: SalvageTicket
+
+- type: Tag
   id: Sausage # MetamorphRecipe: FoodSausageBun
+
+- type: Tag
+  id: SausageBun # BountySausageBun
 
 - type: Tag
   id: ScanGateMachineBoard
@@ -658,6 +801,9 @@
   id: SovietWarehouse
 
 - type: Tag
+  id: SpaceBearHide #BountySalvageSpaceBearHide
+
+- type: Tag
   id: SpecialMech
 
 - type: Tag
@@ -677,6 +823,9 @@
 
 - type: Tag
   id: StoveMachineBoard
+
+- type: Tag
+  id: StutterImmune
 
 - type: Tag
   id: SurgeryCompatibleArmor
@@ -706,6 +855,9 @@
   id: TiderAnvilParts
 
 - type: Tag
+  id: TrashBagBlue
+
+- type: Tag
   id: UnDissolvable
 
 - type: Tag
@@ -715,13 +867,34 @@
   id: Vial
 
 - type: Tag
+  id: VinylSleeve # Storage whitelist: RecordMilkCrate, SyndicateMilkCrate
+
+- type: Tag
+  id: VinylSleeveFit
+
+- type: Tag
   id: WallmountMassScannerElectronics
 
 - type: Tag
+  id: WhitelistChameleonCollar # Chameleon key for chameleon collars
+
+- type: Tag
   id: Wizard
+
+- type: Tag
+  id: WrappedCube
+
+- type: Tag
+  id: RawXenoMeat #BountySalvageRawXenoMeat
 
 - type: Tag
   id: XenomoproachWearable # Allows xenomoproach to wear it, really only used for headsets. No system in place to use differing displacements for something with a given prefix/suffix, so this is needed for now.
 
 - type: Tag
   id: XenosDisasterSurvivorTraitBackground
+
+- type: Tag
+  id: StationRadioCircuitboard
+
+- type: Tag
+  id: AirlockCyclerElectronics # ConstructionGraph: AirlockCycler

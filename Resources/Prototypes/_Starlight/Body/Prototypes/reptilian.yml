@@ -1,4 +1,4 @@
-﻿- type: body
+- type: body
   name: "reptilian"
   id: Reptilian
   root: torso
@@ -10,8 +10,9 @@
       organs:
         brain: OrganHumanBrain
         eyes: OrganHumanEyes
-        tongue: OrganHumanTongue
+        tongue: OrganReptilianTongue
         eye_implant: null
+        nose_implant: null # 🌟Starlight🌟
         brain_implant: null # 🌟Starlight🌟
     torso:
       part: TorsoReptilian
@@ -21,7 +22,7 @@
       - right leg
       - left leg
       organs:
-        heart: OrganAnimalHeart
+        heart: OrganReptilianHeart
         lungs: OrganHumanLungs
         stomach: OrganReptilianStomach
         liver: OrganAnimalLiver

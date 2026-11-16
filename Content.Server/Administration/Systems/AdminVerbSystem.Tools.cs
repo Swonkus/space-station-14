@@ -12,7 +12,6 @@ using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Components;
-using Content.Shared.Administration.Systems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Construction.Components;
@@ -39,12 +38,9 @@ using Robust.Shared.Utility;
 
 #region Starlight
 using Content.Server._Starlight.Medical.Limbs;
-using Content.Server._Starlight.Thaven;
-using Content.Server.Administration.Components;
-using Content.Server.Power.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
-using Content.Shared.Contraband;
+using Content.Shared._Blimpuf.Contraband; // Blimpuf
 using Content.Shared.Electrocution;
 using Content.Shared.Humanoid;
 using Content.Shared.Overlays;
@@ -366,8 +362,10 @@ public sealed partial class AdminVerbSystem
 
             Act = () =>
             {
-                var (mapUid, gridUid) = _adminTestArenaSystem.AssertArenaLoaded(player);
-                _transformSystem.SetCoordinates(args.Target, new EntityCoordinates(gridUid ?? mapUid, Vector2.One));
+                // Starlight begin
+                var mapUid = _adminTestArenaSystem.AssertArenaLoaded(player);
+                _transformSystem.SetCoordinates(args.Target, new EntityCoordinates(mapUid, Vector2.One));
+                // Starlight end
             },
             Impact = LogImpact.Medium,
             Message = Loc.GetString("admin-trick-send-to-test-arena-description"),
@@ -850,7 +848,7 @@ public sealed partial class AdminVerbSystem
                     }
                 },
                 Impact = LogImpact.Medium,
-                Message = "Replace the right arm with a Reaper arm.",
+                Message = Loc.GetString("admin-trick-reaper-arm-description"),
                 Priority = (int)TricksVerbPriorities.SetBulletAmount,
             };
             args.Verbs.Add(reaperArm);
@@ -878,7 +876,7 @@ public sealed partial class AdminVerbSystem
                     }
                 },
                 Impact = LogImpact.Medium,
-                Message = "Replace the left arm with an Engineer arm.",
+                Message = Loc.GetString("admin-trick-engineer-arm-description"),
                 Priority = (int)TricksVerbPriorities.SetBulletAmount,
             };
             args.Verbs.Add(engineerArm);
@@ -906,7 +904,7 @@ public sealed partial class AdminVerbSystem
                     }
                 },
                 Impact = LogImpact.Medium,
-                Message = "Replace the left leg with a Speg.",
+                Message = Loc.GetString("admin-trick-speg-left-description"),
                 Priority = (int)TricksVerbPriorities.SetBulletAmount,
             };
             args.Verbs.Add(leftSpeg);
@@ -934,7 +932,7 @@ public sealed partial class AdminVerbSystem
                     }
                 },
                 Impact = LogImpact.Medium,
-                Message = "Replace the right leg with a Speg.",
+                Message = Loc.GetString("admin-trick-speg-right-description"),
                 Priority = (int)TricksVerbPriorities.SetBulletAmount,
             };
             args.Verbs.Add(rightSpeg);
@@ -1124,10 +1122,13 @@ public sealed partial class AdminVerbSystem
         SnapJoints = -29,
         MakeMinigun = -30,
         SetBulletAmount = -31,
-        ToggleOverlays = -32, // #🌟Starlight🌟
-        AddRandomMood = -32, //Starlight Thaven
-        AddCustomMood = -33, //Starlight Thaven
-        BlockObjectiveTargeting = -44, // Starlight
-        RejoinAtmosDevice = -45 // Starlight
+        #region Starlight admin tricks
+        ToggleOverlays = -32,
+        AddRandomMood = -32,
+        AddCustomMood = -33,
+        BlockObjectiveTargeting = -44,
+        AtmosColorFloodfill = -45,
+        RejoinAtmosDevice = -46
+        #endregion
     }
 }

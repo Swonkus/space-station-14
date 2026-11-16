@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Content.Server.NodeContainer.NodeGroups;
 using Content.Server.NodeContainer.Nodes;
 using Content.Shared.Examine;
 using Content.Shared.NodeContainer;
@@ -28,7 +27,6 @@ namespace Content.Server.NodeContainer.EntitySystems
             SubscribeLocalEvent<NodeContainerComponent, ComponentStartup>(OnStartupEvent);
             SubscribeLocalEvent<NodeContainerComponent, ComponentShutdown>(OnShutdownEvent);
             SubscribeLocalEvent<NodeContainerComponent, AnchorStateChangedEvent>(OnAnchorStateChanged);
-            SubscribeLocalEvent<NodeContainerComponent, ReAnchorEvent>(OnReAnchor);
             SubscribeLocalEvent<NodeContainerComponent, MoveEvent>(OnMoveEvent);
             SubscribeLocalEvent<NodeContainerComponent, ExaminedEvent>(OnExamine);
 
@@ -179,15 +177,6 @@ namespace Content.Server.NodeContainer.EntitySystems
                 _pipeDockingSystem.RemoveDockConnections(uid);
             }
             // Starlight End: PipeDockingSystem
-        }
-
-        private void OnReAnchor(EntityUid uid, NodeContainerComponent component, ref ReAnchorEvent args)
-        {
-            foreach (var node in component.Nodes.Values)
-            {
-                _nodeGroupSystem.QueueNodeRemove(node);
-                _nodeGroupSystem.QueueReflood(node);
-            }
         }
 
         private void OnMoveEvent(EntityUid uid, NodeContainerComponent container, ref MoveEvent ev)

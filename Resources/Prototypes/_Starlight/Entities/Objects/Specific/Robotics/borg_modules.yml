@@ -178,6 +178,67 @@
     icon: { sprite: _Starlight/Interface/Actions/actions_borg.rsi, state: hands }
 
 - type: entity
+  id: BorgModuleGaming
+  parent: [ BaseBorgModule, BaseProviderBorgModule ]
+  name: gaming cyborg module
+  description: A universal cyborg module for handling cash and game supplies.
+  components:
+  - type: Tag
+    tags:
+      - BorgModuleGeneric
+  - type: Sprite
+    layers:
+    - state: generic
+    - sprite: _Starlight/Objects/Specific/Robotics/borgmodule.rsi
+      state: icon-gaming
+  - type: ItemBorgModule
+    hands:
+    - hand:
+        emptyRepresentative: SpaceCash
+        emptyLabel: borg-slot-games-gambling-empty
+        whitelist:
+          tags:
+          - PlayingCardDeckBox
+          - CasinoChip
+          components:
+          - Cash
+          - PlayingCard
+          - PlayingCardDeck
+          - PlayingCardHand
+          - TabletopGame
+          - Dice
+    - hand:
+        emptyRepresentative: SpaceCash
+        emptyLabel: borg-slot-games-gambling-empty
+        whitelist:
+          tags:
+          - PlayingCardDeckBox
+          - CasinoChip
+          components:
+          - Cash
+          - PlayingCard
+          - PlayingCardDeck
+          - PlayingCardHand
+          - TabletopGame
+          - Dice
+    - hand:
+        emptyRepresentative: SpaceCash
+        emptyLabel: borg-slot-games-gambling-empty
+        whitelist:
+          tags:
+          - PlayingCardDeckBox
+          - CasinoChip
+          components:
+          - Cash
+          - PlayingCard
+          - PlayingCardDeck
+          - PlayingCardHand
+          - TabletopGame
+          - Dice
+  - type: BorgModuleIcon
+    icon: { sprite: _Starlight/Interface/Actions/actions_borg.rsi, state: gaming-module }
+
+- type: entity
   id: BorgContrabandBag
   parent: BaseStorageItem
   name: contraband bag
@@ -216,7 +277,7 @@
       state: icon-nt
   - type: ItemBorgModule
     hands:
-    - item: WeaponPDW9TaserBorg
+    - item: WeaponPistolPDW9TaserBorg
     - item: BorgStunbatonRechargeable
     - item: BorgHolocuffs
     - item: BorgFlashRechargeable
@@ -358,7 +419,7 @@
   - type: ItemBorgModule
     hands:
     - item: LuxuryPen
-    - item: BoxFolderCyborgClipboard
+    - item: HandLabeler
     - item: RubberStampApproved
     - item: RubberStampDenied
     - hand:
@@ -377,7 +438,77 @@
           - Pda
           - IdCard
           - Stamp
-    - item: HandLabeler # last entry so it shows at the top of the module slots
+  - type: BorgModuleIcon
+    icon: { sprite: _Starlight/Interface/Actions/actions_borg.rsi, state: paperwork-module }
+
+- type: entity
+  id: FaxMachineBorg
+  parent: BaseItem
+  name: integrated fax transmitter
+  description: A miniaturised bluespace fax array. It can send documents anywhere on the network, but keeps no listing of its own for others to reply to.
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/fax_machine.rsi
+    layers:
+    - state: idle
+      map: [ "enum.FaxMachineVisuals.VisualState" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.FaxMachineVisuals.VisualState:
+        enum.FaxMachineVisuals.VisualState:
+          Printing: { state: printing }
+          Normal: { state: idle }
+  - type: ActivatableUI
+    key: enum.FaxUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FaxUiKey.Key:
+        type: FaxBoundUi
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: FaxMachine
+    name: "Cyborg"
+    responsePings: false
+    paperSlot:
+      insertSound: /Audio/Machines/scanning.ogg
+      ejectSound: /Audio/Machines/tray_eject.ogg
+      whitelist:
+        components:
+        - FaxableObject
+  - type: ItemSlots
+  - type: ItemSlotQuickInsert
+    slot: Paper
+  - type: ContainerContainer
+    containers:
+      Paper: !type:ContainerSlot
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: Fax
+    transmitFrequencyId: Fax
+
+- type: entity
+  id: BorgModulePaperworkPrinting
+  parent: [ BaseBorgModulePurrfus, BaseProviderBorgModule ]
+  name: paperwork printing module
+  description: A complete bureaucracy suite. Prints standard station forms, files them away, and faxes them out.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Specific/Robotics/borgmodule.rsi
+    layers:
+    - state: command
+    - state: icon-paperwork
+  - type: ItemBorgModule
+    hands:
+    - item: PrinterCyber
+    - item: FaxMachineBorg
+    - item: BoxFolderCyborgClipboard
+    - hand:
+        emptyLabel: borg-slot-papers-empty
+        emptyRepresentative: BorgModulePaperStampPlaceholder
+        whitelist:
+          tags:
+          - Document
   - type: BorgModuleIcon
     icon: { sprite: _Starlight/Interface/Actions/actions_borg.rsi, state: paperwork-module }
 
@@ -491,6 +622,7 @@
           - BotanySwab
     - item: HydroponicsToolScythe
     - item: HydroponicsToolHatchet
+    - item: PlantAnalyzer
     - item: PlantBag
     - hand:
         emptyLabel: borg-slot-seeds-empty
@@ -507,6 +639,48 @@
     - item: Bucket
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: gardening-module }
+
+- type: entity
+  id: BorgModuleButcher
+  parent: [ BaseBorgModuleService, BaseProviderBorgModule ]
+  name: butcher cyborg module
+  components:
+  - type: Sprite
+    layers:
+    - state: service
+    - sprite: _Starlight/Objects/Specific/Robotics/borgmodule.rsi
+      state: icon-knife
+  - type: ItemBorgModule
+    hands:
+    - item: ButchCleaver
+    - hand:
+        emptyLabel: borg-slot-organs-strict-empty
+        emptyRepresentative: OrganHumanLungs
+        whitelist:
+          components:
+          - Organ
+    - hand:
+        emptyLabel: borg-slot-meat-empty
+        emptyRepresentative: FoodMeat
+        whitelist:
+          tags:
+          - Meat
+    - hand:
+        emptyLabel: borg-slot-animbox-empty
+        emptyRepresentative: MonkeyCubeBox
+        whitelist:
+          tags:
+          - MonkeyCube
+          - AnimalCubeBox
+          - AnimalCube
+          - WrappedCube
+        blacklist:
+          tags:
+          - NonAnimalCube
+
+    - item: BorgHydrator
+  - type: BorgModuleIcon
+    icon: { sprite: _Starlight/Interface/Actions/actions_borg.rsi, state: butcher-module }
 
 - type: entity
   id: BorgModuleCooking
@@ -595,7 +769,6 @@
     - state: icon-chemist
   - type: ItemBorgModule
     hands:
-    - item: HandheldHealthAnalyzer
     - item: SyndiBorgHypo
     - item: AutoMenderBrute
     - item: AutoMenderBurn
@@ -652,7 +825,6 @@
     - state: icon-defib
   - type: ItemBorgModule
     hands:
-    - item: HandheldHealthAnalyzer
     - item: DefibrillatorSyndicateOneHandedUnpowered
     - item: BorgFireExtinguisher
     - item: BorgHandheldGPSBasic
@@ -684,6 +856,9 @@
   name: syndicate chameleon projector module.
   description: Contains an adaptation of the chameleon projector for the syndicate stealth cyborg.
   components:
+  - type: Tag
+    tags:
+      - BorgModuleGeneric
   - type: Sprite
     layers:
     - state: syndicate
@@ -691,6 +866,12 @@
   - type: ItemBorgModule
     hands:
     - item: ChameleonProjector
+    - hand:
+        emptyRepresentative: PowerCellMedium
+        emptyLabel: borg-slot-powercell-empty
+        whitelist:
+          components:
+          - PowerCell
     - item: PinpointerSyndicateNuclear
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: xenoborg-projector-module }

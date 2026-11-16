@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared._Starlight.Polymorph.Components;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
@@ -8,11 +9,10 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Silicons.Borgs.Components;
-using Content.Shared.Silicons.Laws;
-using Content.Shared.Silicons.Laws.Components;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.Verbs;
 using Robust.Shared.Containers;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
 using Robust.Shared.Utility;
 
@@ -23,12 +23,13 @@ public sealed partial class StationAIShuntSystem : EntitySystem
 
     [Dependency] private SharedMindSystem _mindSystem = default!;
     [Dependency] private SharedActionsSystem _actionSystem = default!;
+    [Dependency] private ActionContainerSystem _actionContainer = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
-    [Dependency] private SharedSiliconLawSystem _siliconLaw = default!;
     [Dependency] private FollowerSystem _follower = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private StationAiVisionSystem _vision = default!;
+    [Dependency] private SharedStationAiSystem _stationAi = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
 
     public override void Initialize()
@@ -43,14 +44,97 @@ public sealed partial class StationAIShuntSystem : EntitySystem
         SubscribeLocalEvent<StationAIShuntThroughComponent, GetVerbsEvent<AlternativeVerb>>(GetAltVerbs);
         SubscribeLocalEvent<StationAIShuntThroughComponent, FindShuntTargetEvent>(OnFindShuntTarget);
     }
+    [SubscribeLocalEvent]
+    private void OnCoreTerminating(Entity<StationAiCoreComponent> ent, ref EntityTerminatingEvent args)
+    {
+        if (_net.IsClient || !_stationAi.TryGetHeld((ent.Owner, ent.Comp), out var ai))
+            return;
+
+        var aiUid = ai.Value;
+        if (!TryComp<StationAIShuntableComponent>(aiUid, out var shuntable)
+            || shuntable.Inhabited is not { } target
+            || !TryComp<StationAIShuntComponent>(target, out var shunt)
+            || shunt.Return != aiUid)
+            return;
+
+        RaiseLocalEvent(target, new AIUnShuntActionEvent { Performer = target });
+    }
+
+    [SubscribeLocalEvent]
+    private void OnShuntableMapInit(EntityUid uid, StationAIShuntableComponent shuntable, ref MapInitEvent args)
+        => SetShuntActionsAvailable(uid, shuntable, IsInStationAiCore(uid));
+    [SubscribeLocalEvent]
+    private void OnShuntableInserted(EntityUid uid, StationAIShuntableComponent shuntable, ref EntGotInsertedIntoContainerMessage args) =>
+        SetShuntActionsAvailable(uid, shuntable, IsInStationAiCore(uid));
+    [SubscribeLocalEvent]
+    private void OnShuntableRemoved(EntityUid uid, StationAIShuntableComponent shuntable, ref EntGotRemovedFromContainerMessage args) =>
+        SetShuntActionsAvailable(uid, shuntable, false);
+
+    private void SetShuntActionsAvailable(EntityUid uid, StationAIShuntableComponent shuntable, bool available)
+    {
+        var hasShuntAction = false;
+        var hasReconnectShuntAction = false;
+        foreach (var action in _actionSystem.GetActions(uid).ToArray())
+        {
+            var prototypeId = MetaData(action.Owner).EntityPrototype?.ID;
+            if (prototypeId == shuntable.ShuntAction.Id)
+            {
+                hasShuntAction = true;
+                shuntable.ShuntActionEntity = action.Owner;
+            }
+            else if (prototypeId == shuntable.ReconnectShuntAction.Id)
+            {
+                hasReconnectShuntAction = true;
+                shuntable.ReconnectShuntActionEntity = action.Owner;
+            }
+            else
+                continue;
+
+            if (available)
+                continue;
+
+            _actionSystem.RemoveAction(uid, action.Owner);
+            _actionContainer.RemoveAction(action.Owner);
+            if (!TerminatingOrDeleted(action.Owner))
+                QueueDel(action.Owner);
+        }
+
+        if (!available)
+            return;
+
+        if (!hasShuntAction)
+            shuntable.ShuntActionEntity = _actionSystem.AddAction(uid, shuntable.ShuntAction.Id);
+
+        if (!hasReconnectShuntAction)
+            shuntable.ReconnectShuntActionEntity = _actionSystem.AddAction(uid, shuntable.ReconnectShuntAction.Id);
+    }
+
+    private bool IsInStationAiCore(EntityUid uid)
+        => _containers.TryGetContainingContainer(uid, out var container)
+            && container.ID == StationAiCoreComponent.Container
+            && HasComp<StationAiCoreComponent>(container.Owner);
+
+    [SubscribeLocalEvent]
+    private void OnShuntableShutdown(EntityUid uid, StationAIShuntableComponent shuntable, ComponentShutdown args)
+    {
+        SetShuntActionsAvailable(uid, shuntable, false);
+
+        if (shuntable.ShuntActionEntity is { } shuntAction
+            && !TerminatingOrDeleted(shuntAction))
+            QueueDel(shuntAction);
+
+        if (shuntable.ReconnectShuntActionEntity is { } reconnectShuntAction
+            && !TerminatingOrDeleted(reconnectShuntAction))
+            QueueDel(reconnectShuntAction);
+    }
 
     #region Actions
     private void OnAttemptShunt(EntityUid uid, StationAIShuntableComponent shuntable, AIShuntActionEvent ev)
     {
-        if (ev.Handled)
+        if (ev.Handled || !IsInStationAiCore(uid))
             return;
         var target = ev.Target;
-        if (_vision.IsOutsideCameraViewCached(target))
+        if (!ev.IgnoreCameraView && _vision.IsOutsideCameraViewCached(target))
             return;
 
         // If target has ShuntThrough component, search for a valid target in containers
@@ -67,10 +151,26 @@ public sealed partial class StationAIShuntSystem : EntitySystem
 
         if (!TryComp<StationAIShuntComponent>(target, out var shunt))
             return;
+
+        // We check first if this is already "posessed" for one or another reason. This is a remote, not a ghost maker.
+        if (_mindSystem.TryGetMind(target, out _, out _))
+        {
+            if (_net.IsServer)
+                _popup.PopupEntity(Loc.GetString("shunt-target-occupied"), target, uid, PopupType.Large);
+            return;
+        }
+
         if (!_mindSystem.TryGetMind(uid, out var mindId, out var _))
             return;
         if (!TryComp<MobStateComponent>(uid, out var state) || state.CurrentState != MobState.Alive)
             return;
+
+        if (shunt.Return != null)
+        {
+            if (_net.IsServer)
+                _popup.PopupEntity(Loc.GetString("shunt-target-occupied"), target, uid, PopupType.Large);
+            return; // target is already inhabited.
+        }
 
         if (TryComp<BorgChassisComponent>(target, out var chassisComp))
         {
@@ -79,34 +179,22 @@ public sealed partial class StationAIShuntSystem : EntitySystem
                 return; //Chassis has no posibrian so cant shunt into it.
             if (!TryComp<StationAIShuntComponent>(brain, out var brainShunt))
                 return; //Chassis brain is not able to be shunted into so obviously we cant.
-            if (brainShunt.Return != null)
+            if (_mindSystem.TryGetMind(brain.Value, out _, out _) || brainShunt.Return != null)
             {
-                if (_net.IsServer) //only send on server cause client is confused somehow?
+                if (_net.IsServer)
                     _popup.PopupEntity(Loc.GetString("shunt-target-occupied"), target, uid, PopupType.Large);
-                return; //Chassis is allready inhabited.
+                return; // The chassis brain is already inhabited.
             }
             brainShunt.Return = uid;
             brainShunt.ReturnAction = _actionSystem.AddAction(brain.Value, shuntable.UnshuntAction.Id);
-        }
-        if (shunt.Return != null)
-        {
-            if (_net.IsServer) //only send on server cause client is confused somehow?
-                _popup.PopupEntity(Loc.GetString("shunt-target-occupied"), target, uid, PopupType.Large);
-            return; //target is allready inhabited.
+            Dirty(brain.Value, brainShunt);
         }
         shunt.Return = uid;
         _mindSystem.TransferTo(mindId, target);
         shunt.ReturnAction = _actionSystem.AddAction(target, shuntable.UnshuntAction.Id);
         shuntable.Inhabited = target;
-
-        if (TryComp<SiliconLawProviderComponent>(uid, out var coreLaws))
-        {
-            var getLaws = new GetSiliconLawsEvent(target);
-            RaiseLocalEvent(target, ref getLaws);
-            shunt.OldLawset = getLaws.Laws;
-
-            _siliconLaw.SetLawset(target, coreLaws.Lawset);
-        }
+        shuntable.LastShunt = target;
+        Dirty(uid, shuntable);
 
         EnsureComp<UncryoableComponent>(uid);
 
@@ -130,17 +218,29 @@ public sealed partial class StationAIShuntSystem : EntitySystem
         if (ev.Handled)
             return;
 
+        if (shunt.Return is not { } shuntReturnUid || !IsInStationAiCore(shuntReturnUid))
+            return;
+
         if (!_mindSystem.TryGetMind(uid, out var mindId, out var _))
             return;
 
         var shuntActionUid = shunt.ReturnAction;
-        var shuntReturnUid = shunt.Return;
 
         if (!TryComp<ActionComponent>(shuntActionUid, out var act))
             return; //Somehow the action does not have action component? invalid perhaps?
 
         if (!TryComp<StationAIShuntableComponent>(shuntReturnUid, out var shuntable))
             return; //trying to return to a body you cant leave from? weird...
+
+        var target = shuntReturnUid;
+        var aiCore = Transform(target).ParentUid;
+        if (_net.IsServer
+            && TryComp<StationAiCoreComponent>(aiCore, out var aiCoreComponent)
+            && !_stationAi.EnsureRemoteEye((aiCore, aiCoreComponent)))
+        {
+            Log.Error($"Failed to restore the remote eye for Station AI core {ToPrettyString(aiCore)} during unshunt.");
+            return;
+        }
 
         if (TryComp<BorgChassisComponent>(uid, out var chassisComp))
         {
@@ -157,19 +257,18 @@ public sealed partial class StationAIShuntSystem : EntitySystem
             _actionSystem.RemoveAction(new Entity<ActionComponent?>(brainActionUid.Value, brainAct));
             brainShunt.Return = null; //cause we are returning now
             brainShunt.ReturnAction = null;
+            Dirty(brain.Value, brainShunt);
         }
 
         _actionSystem.RemoveAction(new Entity<ActionComponent?>(shuntActionUid.Value, act));
-        var target = shuntReturnUid.Value;
         _mindSystem.TransferTo(mindId, target);
         RemComp<UncryoableComponent>(target);
 
-        var aiCore = Transform(target).ParentUid;
-        if (TryComp<StationAiCoreComponent>(aiCore, out var core) &&
-            core.RemoteEntity.HasValue
-            )
+        if (TryComp<StationAiCoreComponent>(aiCore, out var core)
+            && core.RemoteEntity is { Valid: true } remoteEntity
+            && TryComp(remoteEntity, out TransformComponent? _))
         {
-            _transform.SetMapCoordinates(core.RemoteEntity.Value,
+            _transform.SetMapCoordinates(remoteEntity,
                 _transform.ToMapCoordinates(Transform(uid).Coordinates)
             );
 
@@ -177,15 +276,14 @@ public sealed partial class StationAIShuntSystem : EntitySystem
             {
                 foreach (var follower in followed.Following)
                 {
-                    _follower.StartFollowingEntity(follower, core.RemoteEntity.Value);
+                    _follower.StartFollowingEntity(follower, remoteEntity);
                 }
             }
         }
 
-        _siliconLaw.SetLawset(uid, shunt.OldLawset);
-
         shunt.ReturnAction = null;
         shunt.Return = null;
+        Dirty(uid, shunt);
         shuntable.Inhabited = null;
     }
     #endregion
@@ -196,7 +294,7 @@ public sealed partial class StationAIShuntSystem : EntitySystem
         // Handle unshunt verb for entities we're currently inhabiting
         if (comp is StationAIShuntComponent shuntComp && ev.User == ev.Target)
         {
-            if (!shuntComp.Return.HasValue)
+            if (shuntComp.Return is not { } returnTarget || !IsInStationAiCore(returnTarget))
                 return; //we are in something not inhabited. so obvs we cant shunt out of it.
 
             var unshuntVerb = new AlternativeVerb()
@@ -216,7 +314,7 @@ public sealed partial class StationAIShuntSystem : EntitySystem
             return;
         }
 
-        if (!HasComp<StationAIShuntableComponent>(ev.User))
+        if (!HasComp<StationAIShuntableComponent>(ev.User) || !IsInStationAiCore(ev.User))
             return; //only shuntable can get the into verb
 
         // Handle direct shunt targets
@@ -308,6 +406,7 @@ public sealed partial class StationAIShuntSystem : EntitySystem
 
 public sealed partial class AIShuntActionEvent : EntityTargetActionEvent
 {
+    public bool IgnoreCameraView;
 }
 
 public sealed partial class AIUnShuntActionEvent : InstantActionEvent

@@ -4,7 +4,6 @@ using Content.Shared._Starlight.Administration.Components;
 using Content.Shared._Starlight.Administration.Events;
 using Content.Shared.Eye;
 using Content.Shared.Ghost;
-using Content.Shared.Tag;
 using Robust.Server.GameObjects;
 
 namespace Content.Server._Starlight.Administration.Systems;
@@ -54,6 +53,7 @@ public sealed partial class AdminGhostSystem : EntitySystem
             else _visibility.AddLayer(args.Performer, (int)VisibilityFlags.Ghost, false);
             aghostComp.HiddenFromNonAdminGhosts = false;
         }
+        Dirty(args.Performer, aghostComp);
         _visibility.RefreshVisibility(args.Performer);
         _popup.PopupEntity(Loc.GetString(popupLocId), args.Performer, args.Performer);
         args.Handled = true;

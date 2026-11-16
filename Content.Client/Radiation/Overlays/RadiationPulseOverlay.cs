@@ -5,7 +5,6 @@ using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.Graphics;
 using Robust.Shared.Map;
-using Robust.Shared.Physics;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -31,6 +30,7 @@ namespace Content.Client.Radiation.Overlays
         public RadiationPulseOverlay()
         {
             IoCManager.InjectDependencies(this);
+            ZIndex = -100; // Starlight
             _baseShader = _prototypeManager.Index(RadiationShader).Instance().Duplicate();
         }
 

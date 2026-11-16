@@ -3,12 +3,11 @@ using Content.Shared.Access.Systems;
 using Content.Shared.APC;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
-using Robust.Shared.Player;
 
 namespace Content.Client.Power.APC
 {
     [UsedImplicitly]
-    public sealed class ApcBoundUserInterface : BoundUserInterface
+    public sealed partial class ApcBoundUserInterface : BoundUserInterface // Starlight-edit: Partial
     {
         [ViewVariables]
         private ApcMenu? _menu;
@@ -23,6 +22,7 @@ namespace Content.Client.Power.APC
             _menu = this.CreateWindow<ApcMenu>();
             _menu.SetEntity(Owner);
             _menu.OnBreaker += BreakerPressed;
+            _menu.OnLightingMode += LightingModePressed; // Starlight-edit
 
             var hasAccess = false;
             if (PlayerManager.LocalEntity != null)
@@ -31,6 +31,7 @@ namespace Content.Client.Power.APC
                 hasAccess = accessReader.IsAllowed((EntityUid)PlayerManager.LocalEntity, Owner);
             }
             _menu?.SetAccessEnabled(hasAccess);
+            UpdateLighting(); // Starlight-edit
         }
 
         protected override void UpdateState(BoundUserInterfaceState state)

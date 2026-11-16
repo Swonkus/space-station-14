@@ -6,6 +6,7 @@ using Content.Client.Changelog;
 using Content.Client.Chat.Managers;
 using Content.Client.DebugMon;
 using Content.Client.Eui;
+using Content.Client.FeedbackPopup;
 using Content.Client.Fullscreen;
 using Content.Client.GameTicking.Managers;
 using Content.Client.GhostKick;
@@ -30,12 +31,10 @@ using Content.Client.Voting;
 using Content.Shared._NullLink;
 using Content.Shared._Starlight.DocumentManager;
 using Content.Shared.Ame.Components;
-using Content.Shared.Gravity;
 using Content.Shared.Localizations;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
-using Robust.Client.Player;
 using Robust.Client.Replays.Loading;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
@@ -89,6 +88,7 @@ namespace Content.Client.Entry
         [Dependency] private ISharedNullLinkPlayerRolesReqManager _sharedNullLinkPlayer = default!; //NullLink
         [Dependency] private PreWrittenDocumentManager _documentManager = default!; // Starlight
         [Dependency] private IClientAchievementManager _achievementManager = default!; // Starlight
+        [Dependency] private ClientFeedbackManager _feedbackManager = null!;
 
         public override void PreInit()
         {
@@ -191,6 +191,7 @@ namespace Content.Client.Entry
             _userInterfaceManager.SetActiveTheme(_configManager.GetCVar(CVars.InterfaceTheme));
             _documentParsingManager.Initialize();
             _titleWindowManager.Initialize();
+            _feedbackManager.Initialize();
 
             _jobRequirements.Initialize(); //🌟Starlight🌟
 

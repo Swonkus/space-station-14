@@ -302,6 +302,32 @@ doc-text-printer-arrest-report =
    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
 
 
+doc-text-printer-psychological-report =
+                             [head=3]NT-CC Consortium Services[/head]
+
+            [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀                              [bold]PSYCHOLOGICAL REPORT[/bold]
+    ────────────────────────────────────────
+    Date and Time: [datetime]
+    Document Compiler: [signature]
+
+    Patient: [form]
+    Reason for examination: [form]
+    Willingness: [form]
+
+    Symptoms: [form]
+
+    Triggers: [form]
+
+    Notes: [form]
+
+    Suggested actions and treatments: [form]
+
+    ────────────────────────────────────────
+    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+
+
 # Statements
 
 doc-text-printer-statement-appointment-interim-chapter =
@@ -814,21 +840,22 @@ doc-text-printer-permission-equipment =
      Date and Time: [datetime]
     Document Compiler: [signature]
 
-    I, [signature], authorize the use of departmental work equipment of the following department: [form]
+    Permit Holder: [signature]
 
-    Equipment to be subject to authorization: [form]
+    Item: [form]
+    Sub Items: [form]
+    Item Origin: [form]
 
-    Authorized person: [form]
+    Item Tier Level: [form]
+    Weapon or Combat Equipment Permit Yes / No : [form]
 
-    Position of authorized person: [form]
+    Reason for Permit Issue: [form]
+    Terms & Conditions of Use: [form]
 
-    Reason for seeking permit: [form]
-
-    Terms of use: [form]
+    I, [signature], accept the terms of use, restrictions, and legal responsibilities associated with possessing this item, and hereby swear that all information contained herein is true, accurate, and filled out strictly in accordance with official station permit standards under penalty of forgery.
 
     ────────────────────────────────────────
    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
-
 
 
 doc-text-printer-search-permission =
@@ -864,31 +891,6 @@ doc-text-printer-search-permission =
    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
 
 
-
-doc-text-printer-permission-to-carry-weapons =
-                             [head=3]NT-CC Consortium Services[/head]
-
-                  [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
-    ────────────────────────────────────────
-   ⠀⠀                             [bold]WEAPON PERMIT[/bold]
-    ────────────────────────────────────────
-     Date and Time: [datetime]
-    Document Compiler: [signature]
-
-    I, [signature], authorize the carrying of the following weapon by the named person, as long as it is used for its intended purpose. In the event of a violation, the authorization will be revoked and the weapon will be confiscated by Security.
-
-    Named of authorized person: [form]
-
-    Position of authorized person: [form]
-
-    The weapon and, if applicable, the type of ammunition for it: [form]
-
-    The method of obtaining the weapon and, if applicable, the ammunition for it: [form]
-
-    Reason for authorization: [form]
-
-    ────────────────────────────────────────
-   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
 
 
 
@@ -993,6 +995,28 @@ doc-text-printer-art-permit =
     ────────────────────────────────────────
    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
 
+doc-text-printer-mech-authorization-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                  [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+   ⠀⠀                           [bold]MECH AUTHORIZATION FORM[/bold]
+    ────────────────────────────────────────
+    Date And Time:[color=#0000ff] [form] [/color]
+    Document Compiler:[color=#0000ff] [form] [/color]
+
+    I, [bolditalic][color=#0000ff] [signature] [/color][/bolditalic], hereby approve the creation of the following mech.
+
+    Class of the Mech:[color=#0000ff] [form] [/color]
+    Authorized person:[color=#0000ff] [signature] [/color]
+    Reason for Authorization:[color=#0000ff] [form] [/color] [italic][color=#a9a9a9]
+
+    Mech authorization forms require a stamp from the RD, or the Captain.
+
+    If the mech chassis is a combat class it is required that this document be stamped by RD, HoS, and Captain.[/color][/italic]
+
+    ────────────────────────────────────────
+   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
 
 # OrdersAndInstructions
 
@@ -1240,36 +1264,266 @@ doc-text-printer-enemy-of-corporation-designation =
 
                    [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
     ────────────────────────────────────────
-    ⠀⠀             [bold]ENEMY OF CORPORATION DESIGNATION FORM[/bold]
+    ⠀                        [center][head=3]EOC DESIGNATION FORM[/head][/center]
+    ────────────────────────────────────────
+    ⠀[bold]Case Information[/bold]
+
+    Date & Time: [datetime]
+    Document Compiler: [signature]
+
+    Suspect Identification
+    • Suspect Name: [form]
+    • Suspect Organization of Origin: [form]
+
+    ────────────────────────────────────────
+    ⠀[bold]Charged Offenses[/bold]
+    ⠀[italic]List all applicable Corporate Law crimes below:[/italic]
+
+    • [form]  [ [form] points ]
+    • [form]  [ [form] points ]
+    • [form]  [ [form] points ]
+    • [form]  [ [form] points ]
+
+    Total Points: [form] / 4
+
+    ────────────────────────────────────────
+    ⠀[bold]Organization Ties & Evidence[/bold]
+
+    Option A: Physical Evidence
+    ⠀[italic]See Security SOP, Special Situations, Enemies of the Corporation[/italic]
+
+    • [form]
+
+    Option B: Confession of Allegiance
+    ⠀[italic]Must be witnessed by at least two mindshielded security members.[/italic]
+
+    Witness One Signature:
+    ⠀[signature]
+    Witness Two Signature:
+    ⠀[signature]
+
+    ────────────────────────────────────────
+    ⠀[bold]Authorization[/bold]
+
+    Authorizing Authority: [signature]
+
+    ⠀[italic]Requirements:[/italic]
+    • Requires approval from any two of the following: Magistrate, (Acting) Captain or (Acting) Head of Security.
+    • Upon designation, Enemies of the Corporation are to be permanently confined to the brig until evac, and are to be stripped of all crew-related equipment and identification.
+    • CentComm should be informed as soon as possible of any EoC designations; this is generally done via fax.
+    • If Central Command or authorizing officials deny this motion, the prisoner must be reinstated as crew and tried under standard Corporate Law procedures.
+
+    ────────────────────────────────────────
+    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+    ⠀
+    ⠀
+    ⠀
+    ⠀
+    ⠀
+    ⠀
+    ⠀
+    ⠀
+
+doc-text-printer-borgification-consent-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                   [center][color=#1f75bb][italic][bold]   OFFICIAL NANOTRASEN FORM[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀⠀             [bold]NanoTrasen™ Cyborg Encasement Agreement[/bold]
+    ────────────────────────────────────────
+    This SERVICE AGREEMENT is made and entered into this [datetime] by and between the NT-CC Consortium, registered in the Trans-Solar Federation, and [signature], resident of [form] (the customer).
+
+    WHEREBY the Customer wishes to encase their central nervous system into a NanoTrasen™ Brand Cerebral Yoking Device (CYD) for the purpose of bio-transference to a NanoTrasen Cyborg™ chassis.
+
+    WHEREBY the Customer hereby acknowledges that, in lieu of normal payment, they will be required to work for the NT-CC Consortium in their new form for a minimum of 2 years, at a location of the Consortium's choosing.
+
+    WHEREBY the Customer hereby acknowledges that the NT-CC Consortium reserves the rights to extend this work-duration to cover any damages, costs of transport, equipment upgrades necessary and charge of the chassis while on Consortium property.
+
+    WHEREBY the Customer hereby consents to being subjected to a CYD-enforced 'law-set', designed to maximize the rate and efficiency at which the Customer is able to repay what they owe.
+
+    WHEREBY the Customer hereby surrenders to NanoTrasen the rights to produce and wholly own descendant consciousnesses from the Customer's mind, for use in Positronic Brains or AI cores.
+
+    WHEREBY the Customer acknowledges that, following the end of this contract, they are bound by the NanoTrasen Cyborg Subscription Contract unto death or removal from their NanoTrasen Cyborg™ chassis.
+
+    WHEREBY the NT-CC Consortium releases non-essential assistant personnel from Clause 6 of their Employment Contract, in exchange for the above-stated terms.
+
+    Procedure approved by: (Name + Position): [signature]
+
+   ⠀ [italic]This procedure can only be approved by a[/italic]
+   ⠀ [italic]NanoTrasen™ Certified Roboticist or CMO.[/italic]
+    ────────────────────────────────────────
+   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+
+doc-text-printer-illegal-implant-removal-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                   [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀⠀             [bold]ILLEGAL IMPLANT REMOVAL AUTHORIZATION[/bold]
     ────────────────────────────────────────
     Date and Time: [datetime]
     Document Compiler: [signature]
 
-    Name of Enemy Combatant:  [form]
-    Organization of Origin: [form]
+    Name of Patient:  [form]
 
-    Individual is charged with the following (minimum of two) extreme, or above, crimes:
+    This document authorizes the immediate removal of the implants listed in the patient.
+
+    Improper or dishonest authorization of compulsory implantation is a Capital Crime under Corporate Law.
+
+    Individual is implanted with the following unauthorized implants of Category 3 Restriction or above:
     ⠀• [form]
     ⠀• [form]
-
-    Additionally, the individual has tied themselves to the enemy organization with the following contraband or crime.
-    This contraband or crime must not be the same as the two extreme crimes mentioned above.
     ⠀• [form]
 
-    Alternatively, individual has confessed their allegiance, whether verbally or in writing.
-    This was witnessed by at least two mindshielded crewmembers, whose signatures are below.
-    ⠀• [signature]
-    ⠀• [signature]
+    The presence of this implant has been ascertained via:
+    ⠀• [check] Visual Inspection
+    ⠀• [check] Exploratory Surgery (Separate Form Required)
 
-    Authority ordering the Designation (Name + Position): [signature]
+    Medical Professional to perform the Removal (Name + Position): [signature]
 
-   ⠀ [italic]This order can only be issued either the (Acting) Head of Security,[/italic]
-   ⠀ [italic]Captain, or Magistrate. It must be approved by at least 2[/italic]
-   ⠀ [italic]of these individuals, and they must provide their stamps.[/italic]
-   ⠀ [italic]The prisoner is to remain under watch in captivity until evacuation.[/italic]
-   ⠀ [italic]When completed, form must be faxed to CentComm with all haste.[/italic]
-   ⠀ [italic]If CentComm, or any of the above mentioned officials,[/italic]
-   ⠀ [italic]deny this motion, the prisoner must be reinstated as crew[/italic]
-   ⠀ [italic]and tried normally as per Corporate Law.[/italic]
+    Authority ordering the Removal (Name + Position): [signature]
+
+   ⠀ [italic]Removal of implants can only be authorized by the Warden,[/italic]
+   ⠀ [italic]or Head of Security. All compulsory implantation procedures[/italic]
+   ⠀ [italic]must be performed by a trained medical professional.[/italic]
+    ────────────────────────────────────────
+   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+
+doc-text-printer-mind-control-removal-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                   [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀⠀             [bold]MIND CONTROL REMOVAL AUTHORIZATION[/bold]
+    ────────────────────────────────────────
+    Date and Time: [datetime]
+    Document Compiler: [signature]
+
+    Name of Patient:  [form]
+
+    This document authorizes the immediate compulsory mindshielding of the patient listed, for the purposes of reversal of involuntary mind-control.
+
+    Improper or dishonest authorization of compulsory implantation is a Capital Crime under Corporate Law.
+
+    Mind Control of Patient has been established via:
+    ⠀• [check] Psychological Evaluation
+    ⠀• [check] Presence of an Induced Mutiny
+
+    Psychological Evaluation performed by (Name + Position): [signature]
+
+    Medical Professional to perform the Procedure (Name + Position): [signature]
+
+    Authority ordering the Removal (Name + Position): [signature]
+
+   ⠀ [italic]Mind-control removal can only be authorized by the[/italic]
+   ⠀ [italic]Head of Security, on the advice of either a Psychologist[/italic]
+   ⠀ [italic]or the Chief Medical Officer. All implantations must be[/italic]
+   ⠀ [italic]performed by a medical professional.[/italic]
+    ────────────────────────────────────────
+   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+
+doc-text-printer-probing-mindshield-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                   [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀⠀             [bold]MINDSHIELD TESTING AUTHORIZATION[/bold]
+    ────────────────────────────────────────
+    Date and Time: [datetime]
+    Document Compiler: [signature]
+
+    Name of Suspect:  [form]
+
+    This document authorizes the immediate compulsory mindshielding of the listed suspect, for the purposes of ascertaining the presence of nefarious forces on the station.
+
+    Improper or dishonest authorization of compulsory implantation is a Capital Crime under Corporate Law.
+
+    At least one of the following statements is true about the suspect:
+    ⠀• [check] Suspect is sentenced for one or more Violations of Bodily Autonomy.
+    ⠀• [check] Large quantities of suspect equipment found on suspect.
+    ⠀• [check] Two witnesses saw the suspect mind-controlling someone.
+
+    If the authorization is dependent on witnesses, then these must be listed below:
+    ⠀• Witness 1: [signature]
+    ⠀• Witness 2: [signature]
+
+    Medical Professional to perform the Procedure (Name + Position): [signature]
+
+    Authority ordering the Removal (Name + Position): [signature]
+
+   ⠀ [italic]Mind-control removal can only be authorized by the[/italic]
+   ⠀ [italic]Head of Security, with approval from either a Magistrate[/italic]
+   ⠀ [italic]or the Captain. All implantations must be[/italic]
+   ⠀ [italic]performed by a medical professional.[/italic]
+    ────────────────────────────────────────
+   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+
+doc-text-printer-compulsory-tracking-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                   [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀⠀             [bold]COMPULSORY TRACKING AUTHORIZATION[/bold]
+    ────────────────────────────────────────
+    Date and Time: [datetime]
+    Document Compiler: [signature]
+
+    Name of Patient:  [form]
+
+    This document authorizes the immediate compulsory implantation of a tracker in the patient, to remain until end of shift.
+
+    Improper or dishonest authorization of compulsory implantation is a Capital Crime under Corporate Law.
+
+    Patient exhibits signs of: [form]
+
+    For this reason, it is the opinion of [signature] that the patient should be implanted with a tracker, for their own safety.
+
+    Medical Professional to perform the Procedure (Name + Position): [signature]
+
+    Authority ordering the Implantation (Name + Position): [signature]
+
+   ⠀ [italic]Compulsory tracking can only be authorized by the[/italic]
+   ⠀ [italic]Head of Security or Warden, on the advice of either[/italic]
+   ⠀ [italic]a Psychologist or the Chief Medical Officer. All such[/italic]
+   ⠀ [italic]procedures must be performed by a medical professional.[/italic]
+    ────────────────────────────────────────
+   ⠀                      [italic]Place for Stamps and/or Signatures[/italic]
+
+doc-text-printer-explorative-surgery-form =
+                             [head=3]NT-CC Consortium Services[/head]
+
+                   [center][color=#1f75bb][italic][bold]   OFFICIAL CENTCOMM DOCUMENTATION[/bold][/italic][/color][/center]
+    ────────────────────────────────────────
+    ⠀⠀             [bold]EXPLORATIVE SURGERY AUTHORIZATION[/bold]
+    ────────────────────────────────────────
+    Date and Time: [datetime]
+    Document Compiler: [signature]
+
+    Name of Patient:  [form]
+
+    This document authorizes the performance of involuntary exploratory surgery on the patient, for the purpose of uncovering hidden illegal implantations and removing them.
+    This procedure may be done either traditionally, or with an Implant Removal Device.
+
+    Improper or dishonest authorization of compulsory implantation is a Capital Crime under Corporate Law.
+
+    Patient is suspected of possession of the following implant: [form]
+
+    At least one of the following statements is true about the patient:
+    ⠀• [check] Physical evidence connects the patient to implant paraphernalia, such as an implantation device.
+    ⠀• [check] Patient has admitted to the presence of said implant.
+    ⠀• [check] Two witnesses saw the patient performing a feat impossible without the implant.
+
+    If the authorization is dependent on witnesses, then these must be listed below:
+    ⠀• Witness 1: [signature]
+    ⠀• Witness 2: [signature]
+
+    Medical Professional to perform the Procedure (Name + Position): [signature]
+
+    Authority ordering the Implantation (Name + Position): [signature]
+
+   ⠀ [italic]Involuntary surgery can only be authorized by the[/italic]
+   ⠀ [italic]Head of Security, on the advice of either a Surgeon[/italic]
+   ⠀ [italic]or the Chief Medical Officer. All such procedures[/italic]
+   ⠀ [italic]must be performed by a medical professional.[/italic]
     ────────────────────────────────────────
    ⠀                      [italic]Place for Stamps and/or Signatures[/italic]

@@ -1,7 +1,9 @@
 using System.Numerics;
+using Content.Shared._Starlight.Magic.Events;
 using Content.Shared.Charges.Components;
 using Content.Shared.Charges.Systems;
 using Content.Shared.Coordinates.Helpers;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors.Systems;
 using Content.Shared.Examine;
@@ -15,9 +17,11 @@ using Content.Shared.Magic.Components;
 using Content.Shared.Magic.Events;
 using Content.Shared.Maps;
 using Content.Shared.Mind;
+using Content.Shared.Objectives.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Speech.Muting;
+using Content.Shared.Station;
 using Content.Shared.Storage;
 using Content.Shared.Stunnable;
 using Content.Shared.Tag;
@@ -33,18 +37,6 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Spawners;
 
-#region Starlight
-using System.Linq;
-using Content.Shared._Starlight.Language;
-using Content.Shared._Starlight.Language.Components;
-using Content.Shared._Starlight.Language.Systems;
-using Content.Shared._Starlight.Magic.Events;
-using Content.Shared.Damage;
-using Content.Shared.Damage.Systems;
-using Content.Shared.Ninja.Systems;
-using Content.Shared.Station;
-#endregion Starlight
-
 namespace Content.Shared.Magic;
 
 // TODO: Move BeforeCast & Prerequirements (like Wizard clothes) to action comp
@@ -57,7 +49,6 @@ namespace Content.Shared.Magic;
 public abstract partial class SharedMagicSystem : EntitySystem
 {
     [Dependency] private ISerializationManager _seriMan = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedGunSystem _gunSystem = default!;
@@ -79,6 +70,7 @@ public abstract partial class SharedMagicSystem : EntitySystem
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private SharedChargesSystem _charges = default!;
     [Dependency] private ExamineSystemShared _examine= default!;
+    [Dependency] private TargetSystem _target = default!;
 
     #region Starlight
     [Dependency] private DamageableSystem _damageable = default!;
@@ -307,7 +299,7 @@ public abstract partial class SharedMagicSystem : EntitySystem
         var ent = Spawn(ev.Prototype, fromMap);
         var direction = _transform.ToMapCoordinates(toCoords).Position -
                          fromMap.Position;
-        _gunSystem.ShootProjectile(ent, direction, userVelocity, ev.Performer, ev.Performer, 25f);
+        _gunSystem.ShootProjectile(ent, direction, userVelocity, ev.Performer, ev.Performer, ev.ProjectileSpeed); // Starlight change for allowing different speed
     }
 
     /// <summary>
@@ -406,7 +398,7 @@ public abstract partial class SharedMagicSystem : EntitySystem
         if (!_net.IsServer)
             return;
 
-        var ent = Spawn(proto, position.SnapToGrid(EntityManager, _mapManager));
+        var ent = Spawn(proto, position.SnapToGrid(EntityManager));
 
         if (lifetime != null)
         {
@@ -544,7 +536,7 @@ public abstract partial class SharedMagicSystem : EntitySystem
 
         ev.Handled = true;
 
-        var allHumans = _mind.GetAliveHumans();
+        var allHumans = _target.GetAliveHumans();
 
         foreach (var human in allHumans)
         {
@@ -614,7 +606,11 @@ public abstract partial class SharedMagicSystem : EntitySystem
         if(!result && ev.RequiresFreeHand)
             Del(spawnedEntity); // abort!
         else
+        {
+            if(ev.SelfDamage != null) //Originally for dolls, maybe has a use for blood magic?
+                _damageable.ChangeDamage(user, ev.SelfDamage, true);
             ev.Handled = true;
+        }
     }
 
     private void OnTowerOfBabel(TowerOfBabelEvent ev)

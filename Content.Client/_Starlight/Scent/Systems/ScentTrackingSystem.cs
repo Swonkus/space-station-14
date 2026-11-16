@@ -14,13 +14,13 @@ namespace Content.Client._Starlight.Scent.Systems;
 
 // Filters visible ScentMarker sprites to the local player's tracked scent, and plays each
 // marker's fade animation.
-public sealed class ScentTrackingSystem : EntitySystem
+public sealed partial class ScentTrackingSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
-    [Dependency] private readonly AnimationPlayerSystem _animation = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedInternalsSystem _internals = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private AnimationPlayerSystem _animation = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedInternalsSystem _internals = default!;
 
     private const string FadeAnimationKey = "scent-marker-fade";
 
@@ -123,9 +123,10 @@ public sealed class ScentTrackingSystem : EntitySystem
             return;
 
         var visible = !IsPerceptionBlocked(smeller) &&
-                      !(smeller.Perception == ScentPerception.Partial && ent.Comp.ContainedIn != null) &&
-                      !(smeller.Perception == ScentPerception.Partial && IsOutsideOwnEnclosure(ent, enclosure)) &&
-                      (smeller.TrackedScentId == null || ent.Comp.ScentId == smeller.TrackedScentId);
+                        !(smeller.Perception == ScentPerception.Partial && ent.Comp.WasCloaked) &&
+                        !(smeller.Perception == ScentPerception.Partial && ent.Comp.ContainedIn != null && !ent.Comp.WasDead) &&
+                        !(smeller.Perception == ScentPerception.Partial && IsOutsideOwnEnclosure(ent, enclosure)) &&
+                        (smeller.TrackedScentId == null || ent.Comp.ScentId == smeller.TrackedScentId);
         _sprite.SetVisible((ent.Owner, sprite), visible);
     }
 
@@ -143,16 +144,14 @@ public sealed class ScentTrackingSystem : EntitySystem
     private bool TryGetOwnEnclosure(out EntityUid enclosure)
     {
         enclosure = default;
-
         if (_player.LocalSession?.AttachedEntity is not { } local ||
-            !TryComp<TransformComponent>(local, out var localXform) ||
-            !TryComp<EntityStorageComponent>(localXform.ParentUid, out var storage) ||
+            !TryComp<EntityStorageComponent>(Transform(local).ParentUid, out var storage) ||
             !storage.Airtight)
         {
             return false;
         }
 
-        enclosure = localXform.ParentUid;
+        enclosure = Transform(local).ParentUid;
         return true;
     }
 
@@ -181,7 +180,7 @@ public sealed class ScentTrackingSystem : EntitySystem
         _sprite.SetScale((ent.Owner, sprite), new Vector2(scale, scale));
 
         var startAlpha = MathHelper.Lerp(MinAlpha, MaxAlpha, strength);
-        var startColor = GetScentColor(ent.Comp.ScentId).WithAlpha(startAlpha);
+        var startColor = GetScentColor(ent).WithAlpha(startAlpha);
         var endColor = Color.Gray.WithAlpha(0f);
         var remaining = MathF.Max(0.1f, (float)(GetPerceivedExpiry(ent) - _timing.CurTime).TotalSeconds);
 
@@ -232,13 +231,34 @@ public sealed class ScentTrackingSystem : EntitySystem
     }
 
     // Convert.ToUInt32 is blocked by the client sandbox and kills the client silently on startup.
-    private static Color GetScentColor(string scentId)
+    private static Color GetScentColor(Entity<ScentMarkerComponent> ent)
     {
-        if (scentId.Length < 8)
+        var scentId = ent.Comp.ScentId;
+
+        if (ent.Comp.IsPollen)
+        {
+            uint hash = 2166136261;
+
+            foreach (var c in scentId)
+            {
+                hash ^= c;
+                hash *= 16777619;
+            }
+
+            var pollenHue = hash % 360 / 360f;
+            return Color.FromHsv(new Vector4(pollenHue, 0.9f, 1f, 1f));
+        }
+
+        return GetScentColor(scentId);
+    }
+
+    internal static Color GetScentColor(string scentId)
+    {
+        if (scentId.Length < 8 ||
+            !uint.TryParse(scentId[..8], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var seed))
             return Color.White;
 
-        var seed = uint.Parse(scentId[..8], NumberStyles.HexNumber);
-        var hue = (seed % 360) / 360f;
+        var hue = seed % 360 / 360f;
         return Color.FromHsv(new Vector4(hue, 0.85f, 1f, 1f));
     }
 }

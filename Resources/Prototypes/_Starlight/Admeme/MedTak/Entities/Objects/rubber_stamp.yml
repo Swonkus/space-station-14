@@ -2,10 +2,11 @@
   name: MedTak rubber stamp
   parent: [ RubberStampBase, BaseMedTakContraband ]
   id: RubberStampMedTak
+  description: A rubber stamp for stamping important documents. Healthcare isn't free.
   categories: [ DoNotMap ]
   components:
   - type: Stamp
-    stampedName: "MedTak"
+    stampedName: stamp-component-stamped-name-rubber-stamp-med-tak
     stampedColor: "#880606"
     stampState: "paper_stamp-syndicate"
   - type: Sprite

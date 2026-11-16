@@ -5,8 +5,6 @@
   name: arcade
   parent: BaseComputer
   components:
-  - type: ApcPowerReceiver
-    powerLoad: 350
   - type: ExtensionCableReceiver
   - type: PointLight
     radius: 1.8
@@ -33,8 +31,8 @@
           False: { visible: false }
       enum.WiresVisuals.MaintenancePanelState:
         enum.WiresVisualLayers.MaintenancePanel:
-          True: { visible: false }
-          False: { visible: true }
+          True: { visible: true } # Starlight
+          False: { visible: false } # Starlight
       enum.EdgeConnectionVisuals.ConnectionMask:
         computerLayerBody:
           None: { state: arcade }
@@ -230,11 +228,6 @@
     - id: PlushieSharkBlue
     - id: PlushieVox
     - id: PlushieXeno
-    # Starlight-start
-    - id: DeerPlushie
-    - id: OddDeerPlushie
-    - id: VikaPviPlushie
-    # Starlight-end
     - id: PlasticBanana
     - id: RevolverCapGun
     - id: SnapPopBox

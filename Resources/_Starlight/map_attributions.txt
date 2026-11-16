@@ -3,9 +3,6 @@
 - files: ["bagel.yml"]
   authors: Emisse, Starlight Team
 
-- files: ["barratry.yml"]
-  authors: Emogarbage, Scribbles0, Starlight Team
-
 - files: ["box.yml"]
   authors: ACJM, Emisse, Starlight Team
 
@@ -18,11 +15,17 @@
 - files: ["cork.yml"]
   authors: PubliclyExecutedPig, cujo, Starlight Team
 
+- files: ["downpour.yml"]
+  authors:  Makeshiftt, Starlight Team
+
 - files: ["elkridge.yml"]
   authors: Deerstop, Starlight Team
 
 - files: ["fland.yml"]
   authors: Emisse, Starlight Team
+
+- files: ["flotilla.yml"]
+  authors: Hot Mic, Starlight Team
 
 - files: ["hotel.yml"]
   authors: PubliclyExecutedPig, CawsForConcern, Starlight Team
@@ -33,17 +36,14 @@
 - files: ["lagan.yml"]
   authors: PubliclyExecutedPig, Starlight Team
 
-- files: ["leth.yml"]
-  authors: trep_maul, Starlight Team
-
-- files: ["lobster.yml"]
-  authors: PubliclyExecutedPig, Starlight Team
-
 - files: ["manor.yml"]
   authors: PubliclyExecutedPig, vonte (expansions), Starlight Team
 
 - files: ["ming.yml"]
   authors: PubliclyExecutedPig, Starlight Team
+
+- files: ["novolobster.yml"]
+  authors: CawsForConcern (remake), Starlight Team
 
 - files: ["oasis.yml"]
   authors: CptJeanLuc, cvlancer (expansions), Starlight Team
@@ -138,9 +138,6 @@
   authors: Penguinwizzard
 
 - files: ["escape_pod_toilet.yml"]
-  authors: Penguinwizzard
-
-- files: ["escape_pod_verysmall.yml"]
   authors: Penguinwizzard
 
 - files: ["escape_pod_lifeboat.yml"]

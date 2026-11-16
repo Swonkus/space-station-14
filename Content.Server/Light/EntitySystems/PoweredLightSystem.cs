@@ -1,21 +1,9 @@
-using Content.Server.Ghost;
+using Content.Shared.Ghost;
 using Content.Shared.Light.Components;
 using Content.Shared.Light.EntitySystems;
-using AlertLevelDimmedLightComponent = Content.Shared._Starlight.Light.AlertLevelDimmedLightComponent;
-
-#region Starlight
-using Content.Server.Administration.Logs;
+using Content.Shared._Starlight.Light;
 using Content.Server.AlertLevel;
-using Content.Server.DeviceLinking.Systems;
-using Content.Shared.Station.Components; // Starlight
-using Content.Server.DeviceNetwork;
-using Content.Server.DeviceNetwork.Systems;
-using Content.Server._Starlight.GameTicking.Rules.Components; // SL
-using Content.Shared.GameTicking.Components; // SL
-using Content.Server.GameTicking; // SL
-using Content.Server.Chat.Systems; // SL
-using Robust.Shared.Player; // SL
-#endregion Starlight
+using Content.Shared.Station.Components;
 
 namespace Content.Server.Light.EntitySystems;
 
@@ -24,10 +12,6 @@ namespace Content.Server.Light.EntitySystems;
 /// </summary>
 public sealed partial class PoweredLightSystem : SharedPoweredLightSystem
 {
-    [Dependency] private GameTicker _gameTicker = default!; // SL
-    [Dependency] private ChatSystem _chat = default!; // SL
-    [Dependency] private AlertLevelSystem _alertLevel = default!; // SL
-
     public override void Initialize()
     {
         base.Initialize();
@@ -61,7 +45,7 @@ public sealed partial class PoweredLightSystem : SharedPoweredLightSystem
         // TODO: Use ContainerFill dog
         if (light.HasLampOnSpawn != null)
         {
-            var entity = EntityManager.SpawnEntity(light.HasLampOnSpawn, EntityManager.GetComponent<TransformComponent>(uid).Coordinates);
+            var entity = Spawn(light.HasLampOnSpawn, Comp<TransformComponent>(uid).Coordinates);
             ContainerSystem.Insert(entity, light.LightBulbContainer);
         }
         // need this to update visualizers
@@ -92,6 +76,7 @@ public sealed partial class PoweredLightSystem : SharedPoweredLightSystem
             // Otherwise, ensure the component exists and set its value.
             var alertLevelDimming = EnsureComp<AlertLevelDimmedLightComponent>(uid);
             alertLevelDimming.LightEnergyMultiplier = levelAfter.DimmedLightMultiplier.Value;
+            Dirty(uid, alertLevelDimming);
             UpdateLight(uid, light);
         }
     }

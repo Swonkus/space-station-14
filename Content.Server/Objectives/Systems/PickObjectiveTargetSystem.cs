@@ -1,14 +1,10 @@
 using Content.Server.Objectives.Components;
 using Content.Shared.Mind;
 using Content.Shared.Objectives.Components;
-using Content.Server.GameTicking.Rules;
-using Content.Server.Revolutionary.Components;
-using Robust.Shared.Random;
-using System.Linq;
 using Content.Shared.Mind.Filters;
 using Content.Shared._Starlight.Railroading.Events;
-using Content.Shared._Starlight.Railroading;
 using Content.Shared._Starlight.Railroading.Components;
+using Content.Shared.Objectives.Systems;
 
 namespace Content.Server.Objectives.Systems;
 
@@ -18,8 +14,8 @@ namespace Content.Server.Objectives.Systems;
 /// </summary>
 public sealed partial class PickObjectiveTargetSystem : EntitySystem
 {
-    [Dependency] private TargetObjectiveSystem _target = default!;
-    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private TargetObjectiveSystem _objective = default!;
+    [Dependency] private TargetSystem _target = default!;
 
     public override void Initialize()
     {
@@ -56,13 +52,13 @@ public sealed partial class PickObjectiveTargetSystem : EntitySystem
             return;
 
         // couldn't find a target :(
-        if (_mind.PickFromPool(ent.Comp.Pool, ent.Comp.Filters, args.Subject) is not { } picked)
+        if (_target.PickFromPool(ent.Comp.Pool, ent.Comp.Filters, args.Subject) is not { } picked)
         {
             args.Cancelled = true;
             return;
         }
 
-        _target.SetTarget(ent, picked, target);
+        _objective.SetTarget(ent, picked, target);
     }
     // SL end
 
@@ -92,7 +88,7 @@ public sealed partial class PickObjectiveTargetSystem : EntitySystem
             return;
         }
 
-        _target.SetTarget(ent.Owner, targetComp.Target.Value);
+        _objective.SetTarget(ent.Owner, targetComp.Target.Value);
     }
 
     private void OnRandomPersonAssigned(Entity<PickRandomPersonComponent> ent, ref ObjectiveAssignedEvent args)
@@ -109,12 +105,12 @@ public sealed partial class PickObjectiveTargetSystem : EntitySystem
             return;
 
         // couldn't find a target :(
-        if (_mind.PickFromPool(ent.Comp.Pool, ent.Comp.Filters, args.MindId) is not { } picked)
+        if (_target.PickFromPool(ent.Comp.Pool, ent.Comp.Filters, args.MindId) is not {} picked)
         {
             args.Cancelled = true;
             return;
         }
 
-        _target.SetTarget(ent, picked, target);
+        _objective.SetTarget(ent, picked, target);
     }
 }

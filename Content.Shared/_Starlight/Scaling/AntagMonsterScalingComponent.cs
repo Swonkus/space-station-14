@@ -13,8 +13,17 @@ public sealed partial class AntagMonsterScalingComponent : Component
     public double MaximumHealthScaling = 0.50;
 
     [DataField]
+    public double MinimumHealthScaling = -0.50;
+
+    [DataField]
     public bool IsScaled = false;
 
     [DataField]
     public SortedDictionary<FixedPoint2, MobState>? OriginalThresholds;
+
+    /// <summary>
+    /// Maximum health after scaling has been applied.
+    /// </summary>
+    [ViewVariables]
+    public FixedPoint2? ScaledMaxHealth;
 }

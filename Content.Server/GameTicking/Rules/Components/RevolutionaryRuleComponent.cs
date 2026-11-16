@@ -1,5 +1,3 @@
-using Content.Shared.Roles;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Server.GameTicking.Rules.Components;
@@ -34,5 +32,11 @@ public sealed partial class RevolutionaryRuleComponent : Component
     /// </summary>
     [DataField]
     public TimeSpan CommandOffstationGracePeriod = TimeSpan.FromSeconds(45);
+
+    /// <summary>
+    /// One nullspace USSP store per head revolutionary. Implants and radios only point at these.
+    /// </summary>
+    [ViewVariables]
+    public Dictionary<EntityUid, EntityUid> HeadStores = new();
     #endregion Starlight
 }

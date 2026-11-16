@@ -32,7 +32,8 @@
             "copyright": "TG Station, K-Dynamic, wonderfulnewworld"
         },
         {
-            "name": "Vampire"
+            "name": "Vampire",
+            "copyright": "Taken from Paradise Station 13"
         },
         {
             "name": "Surgeon"
@@ -60,6 +61,10 @@
             "copyright": "BORT"
         },
         {
+            "name": "K9",
+            "copyright": "Made by Swonkus (GitHub)"
+        },
+        {
             "name": "Performer",
             "copyright": "wonderfulnewworld"
         },
@@ -73,6 +78,10 @@
                     0.2
                 ]
             ]
+        },
+		{
+            "name": "AssistantManager",
+            "copyright": "wonderfulnewworld"
         },
         {
             "name": "CentComm",
@@ -234,6 +243,10 @@
             "copyright": "Captain icon from /tg/station13 from https://github.com/tgstation/tgstation/blob/ce6beb8a4d61235d9a597a7126c407160ed674ea/icons/mob/huds/hud.dmi, recolored to Blackstar colors by @redmushie (github)"
         },
         {
+            "name": "Thrall",
+            "copyright": "Taken from Paradise Station 13"
+        },
+        {
             "name": "MedTakLeader",
             "copyright": "SevenShades"
         },
@@ -277,6 +290,73 @@
                     0.1
                 ]
             ]
+        },
+        {
+            "name": "GunnerySergeant",
+            "copyright": "AnyTap"
+        },
+        {
+
+            "name": "SalvageMedic",
+            "copyright": "Swonki"
+        },
+        {
+            "name": "ClericalAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "CookAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "DeliveryAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "GardenerAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "HandymanAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "MedicalAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "ReligiousAssistant",
+            "copyright": "Rhetorica, modified by bynddark8"
+        },
+        {
+            "name": "JanitorAssistant",
+            "copyright": "Wizards Den, modified by bynddark8"
+        },
+        {
+            "name": "ShopkeeperAssistant",
+            "copyright": "bynddark8"
+        },
+        {
+            "name": "MakeshiftID",
+            "copyright": "rhithebirdthing"
+        },
+        {
+            "name": "ITGMindshield",
+            "copyright": "Swonki",
+            "delays": [
+                [
+                    1.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "name": "EmotionalSupportScurret",
+            "copyright": "baltdev"
+        },
+        {
+            "name": "SyndicateScurret",
+            "copyright": "baltdev"
         }
     ]
 }

@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Client.CombatMode;
 using Content.Client.Gameplay;
+using Content.Client.Graphics;
 using Content.Client.Outline;
 using Content.Shared.ActionBlocker;
 using Content.Shared.CCVar;
@@ -48,6 +49,7 @@ public sealed partial class DragDropSystem : SharedDragDropSystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedTransformSystem _transformSystem = default!;
     [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private EntityQuery<SpriteComponent> _spriteQuery = default!;
 
     // how often to recheck possible targets (prevents calling expensive
     // check logic each update)
@@ -101,7 +103,8 @@ public sealed partial class DragDropSystem : SharedDragDropSystem
     private ShaderInstance? _dropTargetInRangeShader;
     private ShaderInstance? _dropTargetOutOfRangeShader;
 
-    private readonly List<SpriteComponent> _highlightedSprites = new();
+    private readonly HashSet<SpriteComponent> _highlightedSprites = new();
+    private readonly HashSet<SpriteComponent> _nextHighlightedSprites = new();
 
     public override void Initialize()
     {
@@ -422,8 +425,7 @@ public sealed partial class DragDropSystem : SharedDragDropSystem
         // highlights the possible targets which are visible
         // and able to be dropped on by the current dragged entity
 
-        // remove current highlights
-        RemoveHighlights();
+        _nextHighlightedSprites.Clear();
 
         // find possible targets on screen even if not reachable
         // TODO: Duplicated in SpriteSystem and TargetOutlineSystem. Should probably be cached somewhere for a frame?
@@ -433,11 +435,9 @@ public sealed partial class DragDropSystem : SharedDragDropSystem
         var bounds = new Box2(mousePos.Position - expansion, mousePos.Position + expansion);
         var pvsEntities = _lookup.GetEntitiesIntersecting(mousePos.MapId, bounds);
 
-        var spriteQuery = GetEntityQuery<SpriteComponent>();
-
         foreach (var entity in pvsEntities)
         {
-            if (!spriteQuery.TryGetComponent(entity, out var inRangeSprite) ||
+            if (!_spriteQuery.TryGetComponent(entity, out var inRangeSprite) ||
                 !inRangeSprite.Visible ||
                 entity == _draggedEntity)
             {
@@ -457,32 +457,52 @@ public sealed partial class DragDropSystem : SharedDragDropSystem
                         && _interactionSystem.InRangeUnobstructed(user.Value, entity);
             }
 
-            if (inRangeSprite.PostShader != null &&
-                inRangeSprite.PostShader != _dropTargetInRangeShader &&
-                inRangeSprite.PostShader != _dropTargetOutOfRangeShader)
-            {
-                continue;
-            }
-
             // highlight depending on whether its in or out of range
-            inRangeSprite.PostShader = valid.Value ? _dropTargetInRangeShader : _dropTargetOutOfRangeShader;
+            SetDragDropPostShader((entity, inRangeSprite), valid.Value ? _dropTargetInRangeShader! : _dropTargetOutOfRangeShader!);
             inRangeSprite.RenderOrder = EntityManager.CurrentTick.Value;
-            _highlightedSprites.Add(inRangeSprite);
+            _nextHighlightedSprites.Add(inRangeSprite);
         }
+
+        foreach (var highlightedSprite in _highlightedSprites)
+        {
+            if (_nextHighlightedSprites.Contains(highlightedSprite))
+                continue;
+
+            _sprite.RemovePostShader(highlightedSprite, ContentPostShaderIds.DragDropOutline);
+            highlightedSprite.RenderOrder = 0;
+        }
+
+        _highlightedSprites.Clear();
+        foreach (var highlightedSprite in _nextHighlightedSprites)
+        {
+            _highlightedSprites.Add(highlightedSprite);
+        }
+    }
+
+    private void SetDragDropPostShader(Entity<SpriteComponent?> sprite, ShaderInstance shader)
+    {
+        if (_sprite.TryGetPostShader(sprite, ContentPostShaderIds.DragDropOutline, out var entry) &&
+            entry.Shader == shader)
+        {
+            return;
+        }
+
+        _sprite.SetPostShader(sprite, new SpriteComponent.PostShaderArgs(ContentPostShaderIds.DragDropOutline, shader)
+        {
+            After = ContentPostShaderIds.AfterBaseEffects,
+        });
     }
 
     private void RemoveHighlights()
     {
         foreach (var highlightedSprite in _highlightedSprites)
         {
-            if (highlightedSprite.PostShader != _dropTargetInRangeShader && highlightedSprite.PostShader != _dropTargetOutOfRangeShader)
-                continue;
-
-            highlightedSprite.PostShader = null;
+            _sprite.RemovePostShader(highlightedSprite, ContentPostShaderIds.DragDropOutline);
             highlightedSprite.RenderOrder = 0;
         }
 
         _highlightedSprites.Clear();
+        _nextHighlightedSprites.Clear();
     }
 
     /// <summary>

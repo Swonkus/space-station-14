@@ -35,10 +35,9 @@ using Robust.Shared.Timing;
 using Content.Shared.Radio.Components;
 using Content.Shared._Starlight.Silicons.Borgs;
 using Content.Shared.Actions.Components;
-// Starlight begin
+using Content.Shared.NameModifier.EntitySystems;
 using Content.Shared._Starlight.TextToSpeech;
 using Content.Shared.Tag;
-// Starlight end
 
 namespace Content.Shared.Silicons.Borgs;
 
@@ -70,6 +69,7 @@ public abstract partial class SharedBorgSystem : EntitySystem
     [Dependency] private SharedHandheldLightSystem _handheldLight = default!;
     [Dependency] private SharedAccessSystem _access = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private NameModifierSystem _nameModifier = default!; // Starlight
     [Dependency] private TagSystem _tag = default!; // Starlight
 
     /// <inheritdoc/>
@@ -137,6 +137,33 @@ public abstract partial class SharedBorgSystem : EntitySystem
     private void OnMapInit(Entity<BorgChassisComponent> chassis, ref MapInitEvent args)
     {
         _movementSpeedModifier.RefreshMovementSpeedModifiers(chassis.Owner);
+
+        _access.SetAccessEnabled(chassis.Owner, chassis.Comp.Active); // Starlight-edit: Access status is syncronized to ensure its based on the chassi state
+
+        // Starlight-start: If the borg has a brain, synchronize the name of the brain with the chassis.
+        if (chassis.Comp.BrainEntity is { } brain)
+            SynchronizeBrainName(chassis, brain);
+        // Starlight-end
+    }
+
+    // Starlight: function to synchronize the name of the brain with the chassis, and the other way around.
+    private void SynchronizeBrainName(Entity<BorgChassisComponent> chassis, EntityUid brain)
+    {
+        var brainName = _nameModifier.GetBaseName(brain);
+        var chassisName = _nameModifier.GetBaseName(chassis.Owner);
+
+        if (brainName.Equals(chassisName, StringComparison.InvariantCulture))
+            return;
+
+        if (MetaData(brain).EntityPrototype is { } brainPrototype &&
+            brainName.Equals(brainPrototype.Name, StringComparison.InvariantCulture))
+        {
+            _metaData.SetEntityName(brain, chassisName);
+        }
+        else
+        {
+            _metaData.SetEntityName(chassis, brainName);
+        }
     }
 
     private void OnItemSlotInsertAttempt(Entity<BorgChassisComponent> chassis, ref ItemSlotInsertAttemptEvent args)
@@ -181,6 +208,7 @@ public abstract partial class SharedBorgSystem : EntitySystem
             return;
 
         //#region Starlight
+        SynchronizeBrainName(chassis, args.Entity);
         if (TryComp(args.Entity, out BorgBrainComponent? brain) && _mind.TryGetMind(args.Entity, out var mindId, out var mind))
         {
             //re-target the station-AI's shunt target to the chassis insteaf of the brain
@@ -190,6 +218,8 @@ public abstract partial class SharedBorgSystem : EntitySystem
                 )
                 {
                     shuntable.Inhabited = chassis;
+                    shuntable.LastShunt = chassis; // Starlight
+                    Dirty(shunt.Return.Value, shuntable); // Starlight
                     borgShunt.Return = shunt.Return;
                     borgShunt.ReturnAction = _actions.AddAction(chassis, shuntable.UnshuntAction);
                 }
@@ -228,6 +258,8 @@ public abstract partial class SharedBorgSystem : EntitySystem
                 TryComp<StationAIShuntComponent>(chassis, out var borgShunt))
                 {
                     shuntable.Inhabited = args.Entity;
+                    shuntable.LastShunt = args.Entity; // Starlight
+                    Dirty(shunt.Return.Value, shuntable); // Starlight
                     if (TryComp<ActionComponent>(borgShunt.ReturnAction, out var action))
                         _actions.RemoveAction((borgShunt.ReturnAction.Value, action)); //delete the action as we leave the body
                     borgShunt.Return = null;
@@ -247,6 +279,7 @@ public abstract partial class SharedBorgSystem : EntitySystem
         if (TryComp<TextToSpeechComponent>(chassis, out var ttscomp))
         {
             ttscomp.VoicePrototypeId = args.Mind.Comp.SiliconVoice;
+            Dirty(chassis, ttscomp);
         }
         //Starlight end
 
@@ -455,8 +488,11 @@ public abstract partial class SharedBorgSystem : EntitySystem
         //load borg voice
         if (TryComp<TextToSpeechComponent>(uid, out var ttscomp))
 		{
-			if(mind != null)
-			    ttscomp.VoicePrototypeId = mind.SiliconVoice;
+            if (mind != null)
+            {
+                ttscomp.VoicePrototypeId = mind.SiliconVoice;
+                Dirty(uid, ttscomp);
+            }
 		}
         //Starlight End
 

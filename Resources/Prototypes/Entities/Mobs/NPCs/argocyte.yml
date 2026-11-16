@@ -1,6 +1,6 @@
 ﻿- type: entity
   save: false
-  parent: [ BaseSimpleMob, MobCombat ] # Starlight Edit: Removed BaseMobAnimal
+  parent: [ BaseSimpleMob, MobCombat, MobBloodstream ] # Starlight Edit: Removed BaseMobAnimal
   id: BaseMobArgocyte
   suffix: AI
   description: A dangerous alien found on the wrong side of planets, known for their propensity for munching on ruins.
@@ -14,7 +14,6 @@
       task: SimpleHostileCompound #todo custom argocyte AI
   - type: Sprite
     sprite: Mobs/Aliens/Argocyte/argocyte_common.rsi
-  - type: SolutionContainerManager
   - type: ReplacementAccent
     accent: xeno
   - type: Bloodstream
@@ -56,7 +55,7 @@
     group: GenericNumber
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteSlurva
   name: slurva
   description: A pathetic creature, incapable of doing much.
@@ -78,8 +77,8 @@
     thresholds:
       0: Alive
       30: Dead
-  - type: Butcherable
-    spawned:
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
     - id: FoodMeatXeno
       amount: 1
   - type: MovementSpeedModifier
@@ -91,7 +90,7 @@
         Blunt: 3
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteBarrier
   name: barrier
   components:
@@ -112,10 +111,18 @@
     thresholds:
       0: Alive
       30: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 1
+    - id: SalvageTicket10 # Starlight
+      amount: 2
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 1
+    - id: SalvageTicket10 # Starlight
+      amount: 2
   - type: Fixtures
     fixtures:
       fix1:
@@ -133,7 +140,7 @@
         Blunt: 3
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteSkitter
   name: skitter
   description: A devious little alien... Make sure they don't run off with your rations!
@@ -152,10 +159,18 @@
     thresholds:
       0: Alive
       30: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 1
+    - id: SalvageTicket15 # Starlight
+      amount: 2
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 1
+    - id: SalvageTicket15
+      amount: 2  # Starlight end
   - type: Fixtures
     fixtures:
       fix1:
@@ -173,7 +188,7 @@
         Slash: 3
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteSwiper
   name: swiper
   description: Where did that stack of steel go?
@@ -192,15 +207,23 @@
     thresholds:
       0: Alive
       60: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 2
+    - id: SalvageTicket15 # Starlight
+      amount: 3
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 2
+    - id: SalvageTicket15
+      amount: 3 # Starlight end
   - type: MovementSpeedModifier
     baseSprintSpeed : 5
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteMolder
   name: molder
   components:
@@ -218,16 +241,24 @@
     thresholds:
       0: Alive
       100: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno # Starlight
+      amount: 2
+    - id: SalvageTicket15
+      amount: 3 # Starlight end
   - type: Butcherable
     spawned:
-    - id: FoodMeatXeno
+    - id: FoodMeatXeno # Starlight
       amount: 2
+    - id: SalvageTicket15 # Starlight
+      amount: 3 # Starlight
   - type: MovementSpeedModifier
     baseSprintSpeed : 4
     baseWalkSpeed : 3.5
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocytePouncer
   name: pouncer
   components:
@@ -245,10 +276,18 @@
     thresholds:
       0: Alive
       100: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 2
+    - id: SalvageTicket15 # Starlight
+      amount: 3
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 2
+    - id: SalvageTicket15 # Starlight
+      amount: 3
   - type: MeleeWeapon
     damage:
       types:
@@ -256,7 +295,7 @@
         Slash: 7.5
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteGlider
   name: glider
   components:
@@ -274,10 +313,18 @@
     thresholds:
       0: Alive
       100: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 2
+    - id: SalvageTicket15 # Starlight
+      amount: 3
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 2
+    - id: SalvageTicket15
+      amount: 3 # Starlight end
   - type: MeleeWeapon
     damage:
       types:
@@ -288,7 +335,7 @@
     baseWalkSpeed: 4.5
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteHarvester
   name: harvester
   components:
@@ -306,10 +353,18 @@
     thresholds:
       0: Alive
       150: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 2
+    - id: SalvageTicket30 # Starlight
+      amount: 3
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 2
+    - id: SalvageTicket30
+      amount: 3 # Starlight end
   - type: MeleeWeapon
     damage:
       types:
@@ -318,7 +373,7 @@
         Structural: 5
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteCrawler
   name: crawler
   description: Deadly, pack-animals that maul unsuspecting travelers.
@@ -337,10 +392,18 @@
     thresholds:
       0: Alive
       150: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 2
+    - id: SalvageTicket30 # Starlight
+      amount: 3
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 2
+    - id: SalvageTicket30
+      amount: 3 # Starlight end
   - type: MeleeWeapon
     damage:
       types:
@@ -352,7 +415,7 @@
     baseWalkSpeed: 5
 
 - type: entity
-  parent: BaseMobArgocyte
+  parent: [BaseMobArgocyte, BaseSlicingRefinable]
   id: MobArgocyteEnforcer
   name: enforcer
   components:
@@ -370,10 +433,18 @@
     thresholds:
       0: Alive
       300: Dead
+  - type: !Append ToolRefinable #Starlight
+    refineResult:
+    - id: FoodMeatXeno
+      amount: 3
+    - id: SalvageTicket50 # Starlight
+      amount: 3
   - type: Butcherable
     spawned:
     - id: FoodMeatXeno
       amount: 3
+    - id: SalvageTicket50
+      amount: 3 # Starlight end
   - type: MeleeWeapon
     damage:
       types:
@@ -400,11 +471,18 @@
         Base: founder
       Dead:
         Base: founder_dead
+  - type: !Append ToolRefinable # Starlight butchering fix
+    refineResult: # Starlight
+    - id: FoodMeatXeno
+      amount: 5
+    - id: SalvageTicket50 # Starlight
+      amount: 6
   - type: Butcherable
-    butcheringType: Spike
     spawned:
     - id: FoodMeatXeno
       amount: 5
+    - id: SalvageTicket50
+      amount: 6 # Starlight end
   - type: Fixtures
     fixtures:
       fix1:
@@ -446,11 +524,18 @@
         Base: leviathing
       Dead:
         Base: leviathing_dead
+  - type: !Append ToolRefinable # Starlight butching fix
+    refineResult: # Starlight
+    - id: FoodMeatXeno
+      amount: 10
+    - id: SalvageTicket100 # Starlight
+      amount: 5
   - type: Butcherable
-    butcheringType: Spike
     spawned:
     - id: FoodMeatXeno
       amount: 10
+    - id: SalvageTicket100
+      amount: 5 # Starlight end
   - type: Fixtures
     fixtures:
       fix1:

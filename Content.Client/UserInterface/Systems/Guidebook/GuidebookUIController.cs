@@ -4,7 +4,6 @@ using Content.Client.Guidebook;
 using Content.Client.Guidebook.Controls;
 using Content.Client.Lobby;
 using Content.Client.Players.PlayTimeTracking;
-using Content.Client.UserInterface.Controls;
 using Content.Shared.CCVar;
 using Content.Shared.Guidebook;
 using Content.Shared.Input;
@@ -30,6 +29,7 @@ public sealed partial class GuidebookUIController : UIController, IOnStateEntere
 
     private GuidebookWindow? _guideWindow;
     private bool _poppedOut; // Starlight: true while the guidebook is open as a desktop window instead of in-game
+    private bool _sidebarCollapsed; // Starlight: carried over to the next window for the rest of the client session
     private Controls.MenuButton? GuidebookButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.GuidebookButton;
     private ProtoId<GuideEntryPrototype>? _lastEntry;
 
@@ -86,6 +86,7 @@ public sealed partial class GuidebookUIController : UIController, IOnStateEntere
         _guideWindow.OnFinalClose -= OnWindowFinalClose; // Starlight
 
         // shutdown
+        _sidebarCollapsed = _guideWindow.SidebarCollapsed; // Starlight
         _guideWindow.DisposePopOut(); // Starlight: close the popout if exists
         _guideWindow.Dispose();
         _guideWindow = null;
@@ -166,6 +167,7 @@ public sealed partial class GuidebookUIController : UIController, IOnStateEntere
         _guideWindow.OnOpen += OnWindowOpen;
         _guideWindow.OnPopout += OnWindowPopout;
         _guideWindow.OnFinalClose += OnWindowFinalClose;
+        _guideWindow.SidebarCollapsed = _sidebarCollapsed;
     }
 
     /// <summary>

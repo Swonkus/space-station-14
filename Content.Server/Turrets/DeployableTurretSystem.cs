@@ -2,7 +2,6 @@ using Content.Server.Destructible;
 using Content.Server.DeviceNetwork.Systems;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.HTN.PrimitiveTasks.Operators.Combat.Ranged;
-using Content.Server.Power.Components;
 using Content.Server.TurretController;
 using Content.Shared.Access;
 using Content.Shared.Destructible;
@@ -98,6 +97,16 @@ public sealed partial class DeployableTurretSystem : SharedDeployableTurretSyste
             _turretTargetingSettings.SyncAccessLevelExemptions((ent, turretTargetSettings), accessExemptions);
             return;
         }
+
+        // Starlight - start
+        if (command == DeployableTurretControllerSystem.CmdSetNeutralTargeting &&
+            args.Data.TryGetValue(command, out bool targetNeutralEntities) &&
+            TryComp<TurretTargetSettingsComponent>(ent, out var neutralTargetSettings))
+        {
+            _turretTargetingSettings.SetTargetNeutralEntities((ent, neutralTargetSettings), targetNeutralEntities);
+            return;
+        }
+        // Starlight - end
 
         // Received a command to update the device network
         if (command == DeviceNetworkConstants.CmdUpdatedState)

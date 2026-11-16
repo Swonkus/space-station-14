@@ -1,17 +1,17 @@
 using System.Numerics;
-using Content.Server.Shuttles.Components; // _Starlight
-using Content.Server.UserInterface;
+// _Starlight
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
-using Content.Shared.PowerCell;
-using Content.Shared.Movement.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using Content.Server._Starlight.Shuttles.Systems;
 using Content.Shared._Starlight.Shuttles.Components;
 using Content.Server._Starlight.Shuttles.Components; // _Starlight
+using Content.Shared.Medical.CrewMonitoring;
+using Content.Shared.Silicons.StationAi;
+using Content.Server.Silicons.StationAi;
 
 namespace Content.Server.Shuttles.Systems;
 
@@ -19,11 +19,14 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem
 {
     [Dependency] private ShuttleConsoleSystem _console = default!;
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
-    [Dependency] private SharedTransformSystem _transformSystem = default!; // _Starlight
-    [Dependency] private RadarLaserSystem _laserSystem = default!; // _Starlight
-    [Dependency] private IGameTiming _timing = default!; // _Starlight
 
     #region Starlight
+    [Dependency] private SharedTransformSystem _transformSystem = default!;
+    [Dependency] private RadarLaserSystem _laserSystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private RadarDockingStateSystem _radarDockingStateSystem = default!;
+    [Dependency] private StationAiSystem _stationAiSystem = default!; // "OnWarpRequest"
+
     // Periodic blip/laser update
     // How often (in seconds) to push fresh blip state to all open radar consoles.
     private const float BlipUpdateInterval = 0.25f;
@@ -45,7 +48,27 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem
     {
         base.Initialize();
         SubscribeLocalEvent<RadarConsoleComponent, ComponentStartup>(OnRadarStartup);
+        SubscribeLocalEvent<RadarConsoleComponent, CrewMonitoringWarpRequestMessage>(OnWarpRequest); // Starlight
     }
+    #region Starlight
+    private void OnWarpRequest(EntityUid uid, RadarConsoleComponent component, ref CrewMonitoringWarpRequestMessage args)
+    {
+        if (args.Actor is not { Valid: true } actor || !HasComp<StationAiHeldComponent>(actor))
+            return;
+
+        EntityCoordinates coordinates;
+        try
+        {
+            coordinates = GetCoordinates(args.Coordinates);
+        }
+        catch
+        {
+            return;
+        }
+
+        _stationAiSystem.TryWarpEyeToCoordinates((actor, null), coordinates);
+    }
+    #endregion
 
     public override void Update(float frameTime) // _Starlight
     {
@@ -92,7 +115,7 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem
             component.LastInterfaceUpdateTime = _timing.CurTime;
             // Starlight END
             NavInterfaceState state;
-            var docks = _console.GetDockingPortStates(); // Starlight
+            var docks = _radarDockingStateSystem.GetDockingPortStates(uid); // Starlight
 
             if (coordinates != null && angle != null)
             {

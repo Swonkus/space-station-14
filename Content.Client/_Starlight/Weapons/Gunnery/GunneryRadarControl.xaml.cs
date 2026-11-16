@@ -31,8 +31,6 @@ namespace Content.Client._Starlight.Weapons.Gunnery;
 /// </summary>
 public sealed partial class GunneryRadarControl : BaseShuttleControl
 {
-    [Dependency] private IMapManager _mapManager = default!;
-
     private readonly SharedShuttleSystem  _shuttles;
     private readonly SharedTransformSystem _transform;
 
@@ -200,6 +198,7 @@ public sealed partial class GunneryRadarControl : BaseShuttleControl
         var xformQuery    = EntManager.GetEntityQuery<TransformComponent>();
         var fixturesQuery = EntManager.GetEntityQuery<FixturesComponent>();
         var bodyQuery     = EntManager.GetEntityQuery<PhysicsComponent>();
+        var mapSystem = EntManager.System<SharedMapSystem>();
 
         if (!xformQuery.TryGetComponent(_coordinates.Value.EntityId, out var xform)
             || xform.MapID == MapId.Nullspace)
@@ -245,7 +244,7 @@ public sealed partial class GunneryRadarControl : BaseShuttleControl
         var viewAABB = viewBounds.CalcBoundingBox();
 
         _grids.Clear();
-        _mapManager.FindGridsIntersecting(
+        mapSystem.FindGridsIntersecting(
             xform.MapID,
             new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector),
             ref _grids, approx: true, includeMap: false);
@@ -382,11 +381,11 @@ public sealed partial class GunneryRadarControl : BaseShuttleControl
         // ── Guidance indicator ─────────────────────────────────────────────
         if (_trackedGuidedProjectile != null)
         {
-            const string GuidanceText = "GUIDANCE ACTIVE — hold LMB to steer";
-            var dim = handle.GetDimensions(Font, GuidanceText, 1f);
+            var guidanceText = Loc.GetString("gunnery-guidance-hint");
+            var dim = handle.GetDimensions(Font, guidanceText, 1f);
             handle.DrawString(Font,
                 new Vector2((PixelWidth / 2f) - (dim.X / 2f), PixelHeight - dim.Y - 8f),
-                GuidanceText, Color.LimeGreen);
+                guidanceText, Color.LimeGreen);
         }
     }
 

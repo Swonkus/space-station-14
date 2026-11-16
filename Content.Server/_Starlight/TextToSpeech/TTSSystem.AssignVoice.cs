@@ -14,8 +14,8 @@ public sealed partial class TTSSystem
         if (component is null && !TryComp(uid, out component))
             return fallbackVoice.Value;
 
-        if (component.VoicePrototypeId is string voiceId
-            && _prototypeManager.TryIndex(voiceId, out VoicePrototype? proto))
+        if (component.VoicePrototypeId is { } voiceId
+            && _prototypeManager.TryIndex(voiceId, out var proto))
             return proto.Voice;
 
         var isHumanoid = false;
@@ -37,6 +37,7 @@ public sealed partial class TTSSystem
                 if (mind.Voice is string mindVoiceId && _prototypeManager.TryIndex(mindVoiceId, out VoicePrototype? mindVoice))
                 {
                     component.VoicePrototypeId = mindVoiceId;
+                    Dirty(uid, component);
                     return mindVoice.Voice;
                 }
             }
@@ -45,6 +46,7 @@ public sealed partial class TTSSystem
                 if (mind.SiliconVoice is string mindVoiceId && _prototypeManager.TryIndex(mindVoiceId, out VoicePrototype? mindVoice))
                 {
                     component.VoicePrototypeId = mindVoiceId;
+                    Dirty(uid, component);
                     return mindVoice.Voice;
                 }
             }
@@ -66,6 +68,7 @@ public sealed partial class TTSSystem
             var index = _rng.Next(voicePrototypes.Length);
             var prototype = voicePrototypes[index];
             component.VoicePrototypeId = prototype.Value.ID;
+            Dirty(uid, component);
             return prototype.Value.Voice;
         }
     }

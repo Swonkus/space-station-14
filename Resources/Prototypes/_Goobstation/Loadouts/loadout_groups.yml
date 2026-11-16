@@ -1,22 +1,12 @@
 - type: loadoutGroup
   id: RadioHostJumpsuit
   name: loadout-group-radiohost-jumpsuit
-  minLimit: 0
+  minLimit: 1
   loadouts:
   - JumpsuitHawaiBlack
   - JumpsuitHawaiBlue
   - JumpsuitHawaiRed
   - JumpsuitHawaiYellow
-
-- type: loadoutGroup
-  id: RadioHostGlasses
-  name: loadout-group-radiohost-glasses
-  minLimit: 0
-  loadouts:
-  - Glasses
-  - GlassesJamjar
-  - GlassesJensen
-  - RadioHostSunglasses
 
 - type: loadoutGroup
   id: RadioHostOuterClothing

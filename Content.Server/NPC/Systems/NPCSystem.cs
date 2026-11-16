@@ -9,7 +9,6 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC;
 using Content.Shared.NPC.Systems;
 using Prometheus;
-using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 
@@ -18,7 +17,7 @@ namespace Content.Server.NPC.Systems
     /// <summary>
     ///     Handles NPCs running every tick.
     /// </summary>
-    public sealed partial class NPCSystem : EntitySystem
+    public sealed partial class NPCSystem : SharedNPCSystem
     {
         private static readonly Gauge ActiveGauge = Metrics.CreateGauge(
             "npc_active_count",
@@ -26,6 +25,7 @@ namespace Content.Server.NPC.Systems
 
         [Dependency] private IConfigurationManager _configurationManager = default!;
         [Dependency] private HTNSystem _htn = default!;
+        [Dependency] private MindExamineSystem _mindExamine = default!; // Starlight
         [Dependency] private MobStateSystem _mobState = default!;
 
         /// <summary>
@@ -78,6 +78,11 @@ namespace Content.Server.NPC.Systems
             SleepNPC(uid, component);
         }
 
+        public override bool IsNpc(EntityUid uid)
+        {
+            return HasComp<HTNComponent>(uid);
+        }
+
         /// <summary>
         /// Is the NPC awake and updating?
         /// </summary>
@@ -112,6 +117,7 @@ namespace Content.Server.NPC.Systems
 
             Log.Debug($"Waking {ToPrettyString(uid)}");
             EnsureComp<ActiveNPCComponent>(uid);
+            _mindExamine.RefreshMindStatus(uid); // Starlight
         }
 
         public void SleepNPC(EntityUid uid, HTNComponent? component = null)
@@ -135,6 +141,7 @@ namespace Content.Server.NPC.Systems
 
             Log.Debug($"Sleeping {ToPrettyString(uid)}");
             RemComp<ActiveNPCComponent>(uid);
+            _mindExamine.RefreshMindStatus(uid); // Starlight
         }
 
         /// <inheritdoc />

@@ -15,7 +15,10 @@
         mask:
         - Impassable
   - type: ApcPowerReceiver
-    powerLoad: 300
+    powerLoad: 5
+  - type: PowerState
+    idlePowerDraw: 5
+    workingPowerDraw: 300
   - type: StationAiVision
     range: 1
     needsAnchoring: true
@@ -48,8 +51,8 @@
           True: { visible: false }
       enum.WiresVisuals.MaintenancePanelState:
         enum.WiresVisualLayers.MaintenancePanel:
-          True: { visible: false }
-          False: { visible: true }
+          True: { visible: true } # Starlight
+          False: { visible: false } # Starlight
   - type: Machine
     board: HolopadMachineCircuitboard
   - type: StationAiWhitelist
@@ -115,6 +118,7 @@
   - type: Telephone
     transmissionRange: Map
     compatibleRanges:
+    - Grid # Starlight for SharedGridAccessSystem
     - Map
     - Unlimited
     ignoreTelephonesOnSameGrid: true
